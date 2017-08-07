@@ -28,6 +28,10 @@ func WithEventTypes(eventTypes ...string) func(*webHook) {
 	}
 }
 
+func Debug(server *webHook) {
+	server.debug = true
+}
+
 func WithAllEventTypes(server *webHook) {
 	server.eventTypes = []string{
 		eventtype.CommitComment,

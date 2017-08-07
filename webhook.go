@@ -28,6 +28,7 @@ type webHook struct {
 	secret        string   // optional
 	eventTypes    []string // default: "push"
 	eventHandlers eventHandlers
+	debug         bool
 }
 
 func NewWebHook(eventHandlers *eventHandlers, options ...serverOption) *webHook {
@@ -108,7 +109,9 @@ func (s *webHook) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	fmt.Println(string(body))
+	if s.debug {
+		log.Println(string(body))
+	}
 
 	err = s.handleEvents(eventType, body)
 	if err != nil {

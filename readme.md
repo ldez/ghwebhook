@@ -74,6 +74,7 @@ func main() {
 		ghw.WithPort(5000),
 		ghw.WithPath("/github"),
 		ghw.WithSecret("SECRET"),
+		ghw.Debug,
 		ghw.WithEventTypes(eventtype.Issues, eventtype.PullRequest))
 
 	err := webhook.ListenAndServe()
