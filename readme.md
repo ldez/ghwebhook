@@ -7,7 +7,7 @@ Create a Github WebHook in 5 seconds!
 ## Description
 
 - Default port: `80`
-- Default path: `/ghwebhook`
+- Default path: `/postreceive`
 - Default event type: `push`
 
 ## Examples
@@ -28,11 +28,11 @@ func main() {
 	eventHandlers := ghw.NewEventHandlers().
 		OnIssues(func(payload *github.WebHookPayload, event *github.IssuesEvent) {
 			go func() {
-				log.Println(event.Action, event.Issue)
+				log.Println(event.GetAction(), event.Issue)
 			}()
 		}).
 		OnPullRequest(func(payload *github.WebHookPayload, event *github.PullRequestEvent) {
-			log.Println(event.Action, event.Number, event.PullRequest)
+			log.Println(event.GetAction(), event.GetNumber(), event.PullRequest)
 		})
 
 	webHook := ghw.NewWebHook(eventHandlers, ghw.WithAllEventTypes)
@@ -62,11 +62,11 @@ func main() {
 	eventHandlers := ghw.NewEventHandlers().
 		OnIssues(func(payload *github.WebHookPayload, event *github.IssuesEvent) {
 			go func() {
-				log.Println(event.Action, event.Issue)
+				log.Println(event.GetAction(), event.Issue)
 			}()
 		}).
 		OnPullRequest(func(payload *github.WebHookPayload, event *github.PullRequestEvent) {
-			log.Println(event.Action, event.Number, event.PullRequest)
+			log.Println(event.GetAction(), event.GetNumber(), event.PullRequest)
 		})
 
 	webhook := ghw.NewWebHook(

@@ -18,13 +18,13 @@ import (
 
 const (
 	defaultPort       = 80
-	defaultPath       = "/ghwebhook"
+	defaultPath       = "/postreceive"
 	defaultEventTypes = eventtype.Push
 )
 
 type webHook struct {
 	port          int      // default: 80
-	path          string   // default: "/ghwebhook"
+	path          string   // default: "/postreceive"
 	secret        string   // optional
 	eventTypes    []string // default: "push"
 	eventHandlers eventHandlers
@@ -76,7 +76,7 @@ func (s *webHook) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !isAcceptedEventType(s.eventTypes, eventType) {
-		log.Printf("X-Github-Event: %s", eventType)
+		log.Printf("Unaccepted event. X-Github-Event: %s", eventType)
 		http.Error(w, "400 Bad Request", http.StatusBadRequest)
 		return
 	}
@@ -470,6 +470,8 @@ func (s *webHook) handleEvents(eventType string, body []byte) error {
 		if s.eventHandlers.onWatch != nil {
 			s.eventHandlers.onWatch(whPayload, event)
 		}
+	default:
+		log.Printf("Unknow event type: %s", eventType)
 	}
 
 	return nil
