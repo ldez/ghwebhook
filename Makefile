@@ -1,5 +1,7 @@
 .PHONY: all
 
+GOLIST := $(shell go list ./... | grep -v '/vendor/')
+
 default: test-unit build
 
 dependencies:
@@ -9,4 +11,4 @@ build:
 	go build
 
 test-unit:
-	go test -v $(go list ./... | grep -v '/vendor/')
+	go test -v  $(GOLIST)
