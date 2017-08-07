@@ -45,6 +45,7 @@ func TestServeHTTP(t *testing.T) {
 			headers: map[string]string{
 				"X-Github-Event": eventtype.Ping,
 			},
+			body:         bytes.NewBufferString("{}"),
 			expectedCode: http.StatusOK,
 		},
 		{
@@ -107,9 +108,8 @@ func TestServeHTTP(t *testing.T) {
 			webHook.ServeHTTP(resp, req)
 
 			if resp.Code != test.expectedCode {
-				t.Errorf("Got %d, want %d", resp.Code, test.expectedCode)
+				t.Errorf("Got %d, want %d. %q", resp.Code, test.expectedCode, resp.Body.String())
 			}
-
 		})
 	}
 }

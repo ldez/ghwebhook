@@ -70,12 +70,6 @@ func (s *webHook) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if eventType == eventtype.Ping {
-		log.Print("ping.")
-		fmt.Fprint(w, "pong !\n")
-		return
-	}
-
 	if !isAcceptedEventType(s.eventTypes, eventType) {
 		log.Printf("Unaccepted event. X-Github-Event: %s", eventType)
 		http.Error(w, "400 Bad Request", http.StatusBadRequest)
@@ -125,6 +119,9 @@ func (s *webHook) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func isAcceptedEventType(authorizedEventTypes []string, eventType string) bool {
+	if eventType == eventtype.Ping {
+		return true
+	}
 	for _, aet := range authorizedEventTypes {
 		if eventType == aet {
 			return true
