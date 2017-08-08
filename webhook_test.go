@@ -3,12 +3,17 @@ package ghwebhook
 import (
 	"bytes"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"path/filepath"
 	"testing"
 
+	"github.com/google/go-github/github"
 	"github.com/ldez/ghwebhook/eventtype"
 )
+
+const FixturesDir = "./test-fixtures"
 
 func TestServeHTTP(t *testing.T) {
 	eventHandlers := NewEventHandlers()
@@ -164,4 +169,105 @@ func Test_handleEvents(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestName(t *testing.T) {
+
+	testCases := []struct {
+		name            string
+		eventType       string
+		fixtureFile     string
+		eventHandlers   *eventHandlers
+		expectedHandler func(*testing.T, *eventHandlers)
+	}{
+		{
+			name:        "issue event: opened",
+			eventType:   eventtype.Issues,
+			fixtureFile: "gh-issue_opened.json",
+			eventHandlers: NewEventHandlers().
+				OnIssues(func(payload *github.WebHookPayload, event *github.IssuesEvent) {
+					assertEventAction(t, event, "opened")
+				}),
+			expectedHandler: func(t *testing.T, eh *eventHandlers) {
+				if eh.onIssues == nil {
+					t.Error("Got nil, want onIssues function")
+				}
+			},
+		},
+		{
+			name:        "pull request event: opened",
+			eventType:   eventtype.PullRequest,
+			fixtureFile: "gh-pr_opened.json",
+			eventHandlers: NewEventHandlers().
+				OnPullRequest(func(payload *github.WebHookPayload, event *github.PullRequestEvent) {
+					assertEventAction(t, event, "opened")
+				}),
+			expectedHandler: func(t *testing.T, eh *eventHandlers) {
+				if eh.onPullRequest == nil {
+					t.Error("Got nil, want onPullRequest function")
+				}
+			},
+		},
+		{
+			name:        "ping event",
+			eventType:   eventtype.Ping,
+			fixtureFile: "gh-ping.json",
+			eventHandlers: NewEventHandlers().
+				OnPing(func(payload *github.WebHookPayload, event *github.PingEvent) {
+					if event == nil {
+						t.Error("Got nil, want an event.")
+					}
+
+					expectedZen := "Mind your words, they are important."
+					if event.GetZen() != expectedZen {
+						t.Errorf("Got %s, expected %s", event.GetZen(), expectedZen)
+					}
+				}),
+			expectedHandler: func(t *testing.T, eh *eventHandlers) {
+				if eh.onPing == nil {
+					t.Error("Got nil, want onPing function")
+				}
+			},
+		},
+	}
+
+	for _, test := range testCases {
+		test := test
+		t.Run(test.name, func(t *testing.T) {
+			t.Parallel()
+
+			webHook := NewWebHook(test.eventHandlers)
+			err := webHook.handleEvents(test.eventType, mustReadFixtureFile(test.fixtureFile))
+
+			if err != nil {
+				t.Errorf("Got %v, but want no error.", err)
+			}
+			test.expectedHandler(t, test.eventHandlers)
+		})
+	}
+}
+
+func assertEventAction(t *testing.T, event event, action string) {
+	if event == nil {
+		t.Error("Got nil, want an event.")
+	}
+	if event.GetAction() != action {
+		t.Errorf("Got %s, expected %s", event.GetAction(), action)
+	}
+}
+
+type event interface {
+	GetAction() string
+}
+
+func fixturePath(filename string) string {
+	return filepath.Join(FixturesDir, filename)
+}
+
+func mustReadFixtureFile(filename string) []byte {
+	content, err := ioutil.ReadFile(fixturePath(filename))
+	if err != nil {
+		panic(err)
+	}
+	return content
 }
