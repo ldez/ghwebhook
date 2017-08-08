@@ -1,6 +1,7 @@
 # GHWebHook
 
 [![Build Status](https://travis-ci.org/ldez/ghwebhook.svg?branch=master)](https://travis-ci.org/ldez/ghwebhook)
+[![godoc](https://godoc.org/github.com/ldez/ghwebhook?status.svg)](https://godoc.org/github.com/ldez/ghwebhook)
 
 Create a Github WebHook in 5 seconds!
 
