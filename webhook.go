@@ -31,6 +31,7 @@ type webHook struct {
 	debug         bool
 }
 
+// NewWebHook create a new server as a GitHub WebHook.
 func NewWebHook(eventHandlers *eventHandlers, options ...serverOption) *webHook {
 	server := &webHook{
 		port:          defaultPort,
@@ -46,13 +47,15 @@ func NewWebHook(eventHandlers *eventHandlers, options ...serverOption) *webHook 
 	return server
 }
 
+// ListenAndServe run GitHub WebHook server.
 func (s *webHook) ListenAndServe() error {
 	return http.ListenAndServe(":"+strconv.Itoa(s.port), s)
 }
 
+// ServeHTTP HTTP server handler.
 func (s *webHook) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	if r.Method != "POST" {
+	if r.Method != http.MethodPost {
 		log.Printf("Invalid http method: %s", r.Method)
 		http.Error(w, "405 Method not allowed", http.StatusMethodNotAllowed)
 		return
