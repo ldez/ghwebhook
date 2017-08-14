@@ -1,14 +1,24 @@
 .PHONY: all
 
-GOLIST := $(shell go list ./... | grep -v '/vendor/')
+PKGS := $(shell go list ./... | grep -v '/vendor/')
 
-default: test-unit build
+default: clean lint checks test-unit build
 
 dependencies:
 	dep ensure
+
+clean:
+	rm -f cover.out
 
 build:
 	go build
 
 test-unit:
-	go test -v  $(GOLIST)
+	go test -v -cover $(PKGS)
+
+lint:
+	golint -set_exit_status $(PKGS)
+
+checks:
+	staticcheck $(PKGS)
+	gosimple $(PKGS)
