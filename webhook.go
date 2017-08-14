@@ -22,18 +22,19 @@ const (
 	defaultEventTypes = eventtype.Push
 )
 
-type webHook struct {
+// WebHook server
+type WebHook struct {
 	port          int      // default: 80
 	path          string   // default: "/postreceive"
 	secret        string   // optional
 	eventTypes    []string // default: "push"
-	eventHandlers eventHandlers
+	eventHandlers EventHandlers
 	debug         bool
 }
 
 // NewWebHook create a new server as a GitHub WebHook.
-func NewWebHook(eventHandlers *eventHandlers, options ...serverOption) *webHook {
-	server := &webHook{
+func NewWebHook(eventHandlers *EventHandlers, options ...serverOption) *WebHook {
+	server := &WebHook{
 		port:          defaultPort,
 		path:          defaultPath,
 		eventTypes:    []string{defaultEventTypes},
@@ -48,12 +49,12 @@ func NewWebHook(eventHandlers *eventHandlers, options ...serverOption) *webHook 
 }
 
 // ListenAndServe run GitHub WebHook server.
-func (s *webHook) ListenAndServe() error {
+func (s *WebHook) ListenAndServe() error {
 	return http.ListenAndServe(":"+strconv.Itoa(s.port), s)
 }
 
 // ServeHTTP HTTP server handler.
-func (s *webHook) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (s *WebHook) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodPost {
 		log.Printf("Invalid http method: %s", r.Method)
@@ -151,7 +152,7 @@ func validateSignature(signature string, secret string, body []byte) error {
 	return nil
 }
 
-func (s *webHook) handleEvents(eventType string, body []byte) error {
+func (s *WebHook) handleEvents(eventType string, body []byte) error {
 
 	whPayload := &github.WebHookPayload{}
 	err := json.Unmarshal(body, whPayload)

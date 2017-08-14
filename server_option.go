@@ -2,43 +2,43 @@ package ghwebhook
 
 import "github.com/ldez/ghwebhook/eventtype"
 
-type serverOption func(*webHook)
+type serverOption func(*WebHook)
 
 // WithPort define the server port.
-func WithPort(port int) func(*webHook) {
-	return func(server *webHook) {
+func WithPort(port int) func(*WebHook) {
+	return func(server *WebHook) {
 		server.port = port
 	}
 }
 
 // WithPath define the HTTP handler path.
-func WithPath(path string) func(*webHook) {
-	return func(server *webHook) {
+func WithPath(path string) func(*WebHook) {
+	return func(server *WebHook) {
 		server.path = path
 	}
 }
 
 // WithSecret define the GitHub secret.
-func WithSecret(secret string) func(*webHook) {
-	return func(server *webHook) {
+func WithSecret(secret string) func(*WebHook) {
+	return func(server *WebHook) {
 		server.secret = secret
 	}
 }
 
 // WithEventTypes define accepted event types.
-func WithEventTypes(eventTypes ...string) func(*webHook) {
-	return func(server *webHook) {
+func WithEventTypes(eventTypes ...string) func(*WebHook) {
+	return func(server *WebHook) {
 		server.eventTypes = eventTypes
 	}
 }
 
 // Debug activate debug mode.
-func Debug(server *webHook) {
+func Debug(server *WebHook) {
 	server.debug = true
 }
 
-// WithEventTypes accept all possible event types.
-func WithAllEventTypes(server *webHook) {
+// WithAllEventTypes accept all possible event types.
+func WithAllEventTypes(server *WebHook) {
 	server.eventTypes = []string{
 		eventtype.CommitComment,
 		eventtype.Create,

@@ -177,8 +177,8 @@ func Test_handleEvents_payload(t *testing.T) {
 		name            string
 		eventType       string
 		fixtureFile     string
-		eventHandlers   *eventHandlers
-		expectedHandler func(*testing.T, *eventHandlers)
+		eventHandlers   *EventHandlers
+		expectedHandler func(*testing.T, *EventHandlers)
 	}{
 		{
 			name:        "issue event: opened",
@@ -188,7 +188,7 @@ func Test_handleEvents_payload(t *testing.T) {
 				OnIssues(func(payload *github.WebHookPayload, event *github.IssuesEvent) {
 					assertEventAction(t, event, "opened")
 				}),
-			expectedHandler: func(t *testing.T, eh *eventHandlers) {
+			expectedHandler: func(t *testing.T, eh *EventHandlers) {
 				if eh.onIssues == nil {
 					t.Error("Got nil, want onIssues function")
 				}
@@ -202,7 +202,7 @@ func Test_handleEvents_payload(t *testing.T) {
 				OnPullRequest(func(payload *github.WebHookPayload, event *github.PullRequestEvent) {
 					assertEventAction(t, event, "opened")
 				}),
-			expectedHandler: func(t *testing.T, eh *eventHandlers) {
+			expectedHandler: func(t *testing.T, eh *EventHandlers) {
 				if eh.onPullRequest == nil {
 					t.Error("Got nil, want onPullRequest function")
 				}
@@ -223,7 +223,7 @@ func Test_handleEvents_payload(t *testing.T) {
 						t.Errorf("Got %s, expected %s", event.GetZen(), expectedZen)
 					}
 				}),
-			expectedHandler: func(t *testing.T, eh *eventHandlers) {
+			expectedHandler: func(t *testing.T, eh *EventHandlers) {
 				if eh.onPing == nil {
 					t.Error("Got nil, want onPing function")
 				}
