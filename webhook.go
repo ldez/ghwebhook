@@ -99,9 +99,9 @@ func (s *WebHook) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err := validateSignature(signature, s.secret, body)
-		if err != nil {
-			log.Print(err)
+		errSign := validateSignature(signature, s.secret, body)
+		if errSign != nil {
+			log.Print(errSign)
 			http.Error(w, "403 Forbidden", http.StatusForbidden)
 			return
 		}
