@@ -81,7 +81,7 @@ func (s *WebHook) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Body != nil {
-		defer r.Body.Close()
+		defer func() { _ = r.Body.Close() }()
 	}
 
 	body, err := ioutil.ReadAll(r.Body)

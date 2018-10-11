@@ -1,6 +1,8 @@
 language: go
 
-go: master
+go:
+  - 1.x
+  - master
 
 sudo: false
 
