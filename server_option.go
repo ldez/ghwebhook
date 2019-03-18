@@ -40,7 +40,11 @@ func Debug(server *WebHook) {
 // WithAllEventTypes accept all possible event types.
 func WithAllEventTypes(server *WebHook) {
 	server.eventTypes = []string{
+		eventtype.Ping,
+		eventtype.CheckRun,
+		eventtype.CheckSuite,
 		eventtype.CommitComment,
+		// TODO eventtype.ContentReference,
 		eventtype.Create,
 		eventtype.Delete,
 		eventtype.Deployment,
@@ -48,6 +52,7 @@ func WithAllEventTypes(server *WebHook) {
 		eventtype.Download,
 		eventtype.Follow,
 		eventtype.Fork,
+		eventtype.GitHubAppAuthorization,
 		eventtype.Gist,
 		eventtype.Gollum,
 		eventtype.Installation,
@@ -72,6 +77,9 @@ func WithAllEventTypes(server *WebHook) {
 		eventtype.Push,
 		eventtype.Release,
 		eventtype.Repository,
+		// TODO eventtype.RepositoryImport,
+		eventtype.RepositoryVulnerabilityAlert,
+		// TODO eventtype.SecurityAdvisory,
 		eventtype.Status,
 		eventtype.Team,
 		eventtype.TeamAdd,

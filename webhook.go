@@ -170,6 +170,24 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 		if s.eventHandlers.onPing != nil {
 			s.eventHandlers.onPing(whPayload, event)
 		}
+	case eventtype.CheckRun:
+		event := &github.CheckRunEvent{}
+		err := json.Unmarshal(body, event)
+		if err != nil {
+			return err
+		}
+		if s.eventHandlers.onCheckRun != nil {
+			s.eventHandlers.onCheckRun(whPayload, event)
+		}
+	case eventtype.CheckSuite:
+		event := &github.CheckSuiteEvent{}
+		err := json.Unmarshal(body, event)
+		if err != nil {
+			return err
+		}
+		if s.eventHandlers.onCheckSuite != nil {
+			s.eventHandlers.onCheckSuite(whPayload, event)
+		}
 	case eventtype.CommitComment:
 		event := &github.CommitCommentEvent{}
 		err := json.Unmarshal(body, event)
@@ -232,6 +250,15 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 		if s.eventHandlers.onFork != nil {
 			s.eventHandlers.onFork(whPayload, event)
 		}
+	case eventtype.GitHubAppAuthorization:
+		event := &github.GitHubAppAuthorizationEvent{}
+		err := json.Unmarshal(body, event)
+		if err != nil {
+			return err
+		}
+		if s.eventHandlers.onGitHubAppAuthorization != nil {
+			s.eventHandlers.onGitHubAppAuthorization(whPayload, event)
+		}
 	case eventtype.Gist:
 		if s.eventHandlers.onGist != nil {
 			s.eventHandlers.onGist(whPayload, body)
@@ -291,8 +318,13 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			s.eventHandlers.onLabel(whPayload, event)
 		}
 	case eventtype.MarketplacePurchase:
+		event := &github.MarketplacePurchaseEvent{}
+		err := json.Unmarshal(body, event)
+		if err != nil {
+			return err
+		}
 		if s.eventHandlers.onMarketplacePurchase != nil {
-			s.eventHandlers.onMarketplacePurchase(whPayload, body)
+			s.eventHandlers.onMarketplacePurchase(whPayload, event)
 		}
 	case eventtype.Member:
 		event := &github.MemberEvent{}
@@ -437,6 +469,15 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 		}
 		if s.eventHandlers.onRepository != nil {
 			s.eventHandlers.onRepository(whPayload, event)
+		}
+	case eventtype.RepositoryVulnerabilityAlert:
+		event := &github.RepositoryVulnerabilityAlertEvent{}
+		err := json.Unmarshal(body, event)
+		if err != nil {
+			return err
+		}
+		if s.eventHandlers.onRepositoryVulnerabilityAlert != nil {
+			s.eventHandlers.onRepositoryVulnerabilityAlert(whPayload, event)
 		}
 	case eventtype.Status:
 		event := &github.StatusEvent{}

@@ -172,7 +172,6 @@ func Test_handleEvents(t *testing.T) {
 }
 
 func Test_handleEvents_payload(t *testing.T) {
-
 	testCases := []struct {
 		name            string
 		eventType       string
