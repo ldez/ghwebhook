@@ -1,5 +1,6 @@
 # GHWebHook
 
+[![release](https://img.shields.io/github/tag/ldez/ghwebhook.svg)](https://github.com/ldez/ghwebhook/releases)
 [![Build Status](https://travis-ci.org/ldez/ghwebhook.svg?branch=master)](https://travis-ci.org/ldez/ghwebhook)
 [![godoc](https://godoc.org/github.com/ldez/ghwebhook?status.svg)](https://godoc.org/github.com/ldez/ghwebhook)
 
