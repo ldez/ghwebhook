@@ -32,16 +32,28 @@ func TestServeHTTP(t *testing.T) {
 			method:       http.MethodGet,
 			path:         defaultPath,
 			expectedCode: http.StatusMethodNotAllowed,
-		}, {
+		},
+		{
 			name:         "invalid path",
 			method:       http.MethodPost,
 			path:         "/foo",
 			expectedCode: http.StatusNotFound,
-		}, {
+		},
+		{
 			name:         "missing X-Github-Event header",
 			method:       http.MethodPost,
 			path:         defaultPath,
 			expectedCode: http.StatusBadRequest,
+		},
+		{
+			name:   "ping path prefix",
+			method: http.MethodPost,
+			path:   defaultPath + "/(.+)",
+			headers: map[string]string{
+				"X-Github-Event": eventtype.Ping,
+			},
+			body:         bytes.NewBufferString("{}"),
+			expectedCode: http.StatusOK,
 		},
 		{
 			name:   "ping",

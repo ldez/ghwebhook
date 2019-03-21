@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"regexp"
 	"strconv"
 
 	"github.com/google/go-github/github"
@@ -24,10 +25,10 @@ const (
 
 // WebHook server
 type WebHook struct {
-	port          int      // default: 80
-	path          string   // default: "/postreceive"
-	secret        string   // optional
-	eventTypes    []string // default: "push"
+	port          int            // default: 80
+	path          *regexp.Regexp // default: "/postreceive"
+	secret        string         // optional
+	eventTypes    []string       // default: "push"
 	eventHandlers EventHandlers
 	debug         bool
 }
@@ -36,7 +37,7 @@ type WebHook struct {
 func NewWebHook(eventHandlers *EventHandlers, options ...serverOption) *WebHook {
 	server := &WebHook{
 		port:          defaultPort,
-		path:          defaultPath,
+		path:          regexp.MustCompile(defaultPath),
 		eventTypes:    []string{defaultEventTypes},
 		eventHandlers: *eventHandlers,
 	}
@@ -61,7 +62,7 @@ func (s *WebHook) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if r.URL.Path != s.path {
+	if !s.path.MatchString(r.URL.Path) {
 		http.NotFound(w, r)
 		return
 	}

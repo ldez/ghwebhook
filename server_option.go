@@ -1,6 +1,10 @@
 package ghwebhook
 
-import "github.com/ldez/ghwebhook/eventtype"
+import (
+	"regexp"
+
+	"github.com/ldez/ghwebhook/eventtype"
+)
 
 type serverOption func(*WebHook)
 
@@ -14,7 +18,7 @@ func WithPort(port int) func(*WebHook) {
 // WithPath define the HTTP handler path.
 func WithPath(path string) func(*WebHook) {
 	return func(server *WebHook) {
-		server.path = path
+		server.path = regexp.MustCompile(path)
 	}
 }
 
