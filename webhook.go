@@ -196,6 +196,15 @@ func (s *WebHook) handleEvents(uri *url.URL, eventType string, body []byte) erro
 			}
 			s.eventHandlers.onCommitComment(uri, whPayload, event)
 		}
+	case eventtype.ContentReference:
+		if s.eventHandlers.onContentReference != nil {
+			event := &ContentReferenceEvent{}
+			err := json.Unmarshal(body, event)
+			if err != nil {
+				return err
+			}
+			s.eventHandlers.onContentReference(uri, whPayload, event)
+		}
 	case eventtype.Create:
 		if s.eventHandlers.onCreate != nil {
 			event := &github.CreateEvent{}
@@ -457,6 +466,15 @@ func (s *WebHook) handleEvents(uri *url.URL, eventType string, body []byte) erro
 			}
 			s.eventHandlers.onRepository(uri, whPayload, event)
 		}
+	case eventtype.RepositoryImport:
+		if s.eventHandlers.onRepositoryImport != nil {
+			event := &RepositoryImportEvent{}
+			err := json.Unmarshal(body, event)
+			if err != nil {
+				return err
+			}
+			s.eventHandlers.onRepositoryImport(uri, whPayload, event)
+		}
 	case eventtype.RepositoryVulnerabilityAlert:
 		if s.eventHandlers.onRepositoryVulnerabilityAlert != nil {
 			event := &github.RepositoryVulnerabilityAlertEvent{}
@@ -465,6 +483,15 @@ func (s *WebHook) handleEvents(uri *url.URL, eventType string, body []byte) erro
 				return err
 			}
 			s.eventHandlers.onRepositoryVulnerabilityAlert(uri, whPayload, event)
+		}
+	case eventtype.SecurityAdvisory:
+		if s.eventHandlers.onSecurityAdvisory != nil {
+			event := &SecurityAdvisoryEvent{}
+			err := json.Unmarshal(body, event)
+			if err != nil {
+				return err
+			}
+			s.eventHandlers.onSecurityAdvisory(uri, whPayload, event)
 		}
 	case eventtype.Status:
 		if s.eventHandlers.onStatus != nil {

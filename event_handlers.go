@@ -10,13 +10,10 @@ import (
 type EventHandlers struct {
 	onPing func(*url.URL, *github.WebHookPayload, *github.PingEvent)
 
-	// TODO onContentReference            func(*github.WebHookPayload, *github.ContentReferenceEvent)
-	// TODO onRepositoryImport               func(*github.WebHookPayload, *github.RepositoryImportEvent)
-	// TODO onSecurityAdvisory               func(*github.WebHookPayload, *github.SecurityAdvisoryEvent)
-
 	onCheckRun                     func(*url.URL, *github.WebHookPayload, *github.CheckRunEvent)
 	onCheckSuite                   func(*url.URL, *github.WebHookPayload, *github.CheckSuiteEvent)
 	onCommitComment                func(*url.URL, *github.WebHookPayload, *github.CommitCommentEvent)
+	onContentReference             func(*url.URL, *github.WebHookPayload, *ContentReferenceEvent)
 	onCreate                       func(*url.URL, *github.WebHookPayload, *github.CreateEvent)
 	onDelete                       func(*url.URL, *github.WebHookPayload, *github.DeleteEvent)
 	onDeployment                   func(*url.URL, *github.WebHookPayload, *github.DeploymentEvent)
@@ -46,7 +43,9 @@ type EventHandlers struct {
 	onPush                         func(*url.URL, *github.WebHookPayload, *github.PushEvent)
 	onRelease                      func(*url.URL, *github.WebHookPayload, *github.ReleaseEvent)
 	onRepository                   func(*url.URL, *github.WebHookPayload, *github.RepositoryEvent)
+	onRepositoryImport             func(*url.URL, *github.WebHookPayload, *RepositoryImportEvent)
 	onRepositoryVulnerabilityAlert func(*url.URL, *github.WebHookPayload, *github.RepositoryVulnerabilityAlertEvent)
+	onSecurityAdvisory             func(*url.URL, *github.WebHookPayload, *SecurityAdvisoryEvent)
 	onStatus                       func(*url.URL, *github.WebHookPayload, *github.StatusEvent)
 	onTeam                         func(*url.URL, *github.WebHookPayload, *github.TeamEvent)
 	onTeamAdd                      func(*url.URL, *github.WebHookPayload, *github.TeamAddEvent)
@@ -79,6 +78,12 @@ func (c *EventHandlers) OnCheckSuite(eventHandler func(uri *url.URL, payload *gi
 // OnCommitComment CommitComment handler.
 func (c *EventHandlers) OnCommitComment(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.CommitCommentEvent)) *EventHandlers {
 	c.onCommitComment = eventHandler
+	return c
+}
+
+// OnContentReference ContentReference handler.
+func (c *EventHandlers) OnContentReference(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *ContentReferenceEvent)) *EventHandlers {
+	c.onContentReference = eventHandler
 	return c
 }
 
@@ -250,9 +255,21 @@ func (c *EventHandlers) OnRepository(eventHandler func(uri *url.URL, payload *gi
 	return c
 }
 
+// OnRepositoryImport RepositoryImport handler.
+func (c *EventHandlers) OnRepositoryImport(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *RepositoryImportEvent)) *EventHandlers {
+	c.onRepositoryImport = eventHandler
+	return c
+}
+
 // OnRepositoryVulnerabilityAlert RepositoryVulnerabilityAlert handler.
 func (c *EventHandlers) OnRepositoryVulnerabilityAlert(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.RepositoryVulnerabilityAlertEvent)) *EventHandlers {
 	c.onRepositoryVulnerabilityAlert = eventHandler
+	return c
+}
+
+// OnSecurityAdvisory SecurityAdvisory handler.
+func (c *EventHandlers) OnSecurityAdvisory(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *SecurityAdvisoryEvent)) *EventHandlers {
+	c.onSecurityAdvisory = eventHandler
 	return c
 }
 
