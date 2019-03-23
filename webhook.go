@@ -231,14 +231,6 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			}
 			s.eventHandlers.onDeploymentStatus(whPayload, event)
 		}
-	case eventtype.Download:
-		if s.eventHandlers.onDownload != nil {
-			s.eventHandlers.onDownload(whPayload, body)
-		}
-	case eventtype.Follow:
-		if s.eventHandlers.onFollow != nil {
-			s.eventHandlers.onFollow(whPayload, body)
-		}
 	case eventtype.Fork:
 		if s.eventHandlers.onFork != nil {
 			event := &github.ForkEvent{}
@@ -256,10 +248,6 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 				return err
 			}
 			s.eventHandlers.onGitHubAppAuthorization(whPayload, event)
-		}
-	case eventtype.Gist:
-		if s.eventHandlers.onGist != nil {
-			s.eventHandlers.onGist(whPayload, body)
 		}
 	case eventtype.Gollum:
 		if s.eventHandlers.onGollum != nil {

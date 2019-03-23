@@ -11,12 +11,8 @@ const (
 	Delete                       = "delete"
 	Deployment                   = "deployment"
 	DeploymentStatus             = "deployment_status"
-	Download                     = "download" // Deprecated
-	Follow                       = "follow"   // Deprecated
 	Fork                         = "fork"
-	ForkApply                    = "fork_apply" // Deprecated
 	GitHubAppAuthorization       = "github_app_authorization"
-	Gist                         = "gist" // Deprecated
 	Gollum                       = "gollum"
 	Installation                 = "installation"
 	InstallationRepositories     = "installation_repositories"

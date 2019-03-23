@@ -159,12 +159,6 @@ func Test_handleEvents(t *testing.T) {
 			body:          []byte("{}"),
 			expectedError: false,
 		},
-		{
-			name:          "valid Raw body",
-			eventType:     eventtype.Gist,
-			body:          []byte("{}"),
-			expectedError: false,
-		},
 	}
 
 	for _, test := range testCases {

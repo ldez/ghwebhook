@@ -17,11 +17,8 @@ type EventHandlers struct {
 	onDelete                       func(*github.WebHookPayload, *github.DeleteEvent)
 	onDeployment                   func(*github.WebHookPayload, *github.DeploymentEvent)
 	onDeploymentStatus             func(*github.WebHookPayload, *github.DeploymentStatusEvent)
-	onDownload                     func(*github.WebHookPayload, []byte) // Deprecated
-	onFollow                       func(*github.WebHookPayload, []byte) // Deprecated
 	onFork                         func(*github.WebHookPayload, *github.ForkEvent)
 	onGitHubAppAuthorization       func(*github.WebHookPayload, *github.GitHubAppAuthorizationEvent)
-	onGist                         func(*github.WebHookPayload, []byte) // Deprecated
 	onGollum                       func(*github.WebHookPayload, *github.GollumEvent)
 	onInstallation                 func(*github.WebHookPayload, *github.InstallationEvent)
 	onInstallationRepositories     func(*github.WebHookPayload, *github.InstallationRepositoriesEvent)
@@ -105,30 +102,9 @@ func (c *EventHandlers) OnDeploymentStatus(eventHandler func(payload *github.Web
 	return c
 }
 
-// OnDownload Download handler.
-// Deprecated
-func (c *EventHandlers) OnDownload(eventHandler func(payload *github.WebHookPayload, event []byte)) *EventHandlers {
-	c.onDownload = eventHandler
-	return c
-}
-
-// OnFollow Follow handler.
-// Deprecated
-func (c *EventHandlers) OnFollow(eventHandler func(payload *github.WebHookPayload, event []byte)) *EventHandlers {
-	c.onFollow = eventHandler
-	return c
-}
-
 // OnFork Fork handler.
 func (c *EventHandlers) OnFork(eventHandler func(payload *github.WebHookPayload, event *github.ForkEvent)) *EventHandlers {
 	c.onFork = eventHandler
-	return c
-}
-
-// OnGist Gist handler.
-// Deprecated
-func (c *EventHandlers) OnGist(eventHandler func(payload *github.WebHookPayload, event []byte)) *EventHandlers {
-	c.onGist = eventHandler
 	return c
 }
 
