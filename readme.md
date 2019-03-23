@@ -20,6 +20,7 @@ package main
 
 import (
 	"log"
+	"net/url"
 
 	"github.com/google/go-github/github"
 	ghw "github.com/ldez/ghwebhook"
@@ -28,13 +29,13 @@ import (
 func main() {
 
 	eventHandlers := ghw.NewEventHandlers().
-		OnIssues(func(payload *github.WebHookPayload, event *github.IssuesEvent) {
+		OnIssues(func(uri *url.URL, payload *github.WebHookPayload, event *github.IssuesEvent) {
 			go func() {
-				log.Println(event.GetAction(), event.Issue)
+				log.Println(uri, event.GetAction(), event.Issue)
 			}()
 		}).
-		OnPullRequest(func(payload *github.WebHookPayload, event *github.PullRequestEvent) {
-			log.Println(event.GetAction(), event.GetNumber(), event.PullRequest)
+		OnPullRequest(func(uri *url.URL, payload *github.WebHookPayload, event *github.PullRequestEvent) {
+			log.Println(uri, event.GetAction(), event.GetNumber(), event.PullRequest)
 		})
 
 	webHook := ghw.NewWebHook(eventHandlers, ghw.WithAllEventTypes)
@@ -53,6 +54,7 @@ package main
 
 import (
 	"log"
+	"net/url"
 
 	"github.com/google/go-github/github"
 	ghw "github.com/ldez/ghwebhook"
@@ -62,13 +64,13 @@ import (
 func main() {
 
 	eventHandlers := ghw.NewEventHandlers().
-		OnIssues(func(payload *github.WebHookPayload, event *github.IssuesEvent) {
+		OnIssues(func(uri *url.URL, payload *github.WebHookPayload, event *github.IssuesEvent) {
 			go func() {
-				log.Println(event.GetAction(), event.Issue)
+				log.Println(uri, event.GetAction(), event.Issue)
 			}()
 		}).
-		OnPullRequest(func(payload *github.WebHookPayload, event *github.PullRequestEvent) {
-			log.Println(event.GetAction(), event.GetNumber(), event.PullRequest)
+		OnPullRequest(func(uri *url.URL, payload *github.WebHookPayload, event *github.PullRequestEvent) {
+			log.Println(uri, event.GetAction(), event.GetNumber(), event.PullRequest)
 		})
 
 	webhook := ghw.NewWebHook(

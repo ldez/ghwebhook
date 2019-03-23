@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"regexp"
 	"strconv"
 
@@ -111,7 +112,7 @@ func (s *WebHook) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		log.Println(string(body))
 	}
 
-	err = s.handleEvents(eventType, body)
+	err = s.handleEvents(r.URL, eventType, body)
 	if err != nil {
 		log.Printf("Failed to unmashall request body: %v", err)
 		log.Printf("Failed to unmashall request body: %s", string(body))
@@ -152,7 +153,7 @@ func validateSignature(signature string, secret string, body []byte) error {
 	return nil
 }
 
-func (s *WebHook) handleEvents(eventType string, body []byte) error {
+func (s *WebHook) handleEvents(uri *url.URL, eventType string, body []byte) error {
 	whPayload, err := parseWebHookPayload(body)
 	if err != nil {
 		return err
@@ -166,7 +167,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onPing(whPayload, event)
+			s.eventHandlers.onPing(uri, whPayload, event)
 		}
 	case eventtype.CheckRun:
 		if s.eventHandlers.onCheckRun != nil {
@@ -175,7 +176,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onCheckRun(whPayload, event)
+			s.eventHandlers.onCheckRun(uri, whPayload, event)
 		}
 	case eventtype.CheckSuite:
 		if s.eventHandlers.onCheckSuite != nil {
@@ -184,7 +185,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onCheckSuite(whPayload, event)
+			s.eventHandlers.onCheckSuite(uri, whPayload, event)
 		}
 	case eventtype.CommitComment:
 		if s.eventHandlers.onCommitComment != nil {
@@ -193,7 +194,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onCommitComment(whPayload, event)
+			s.eventHandlers.onCommitComment(uri, whPayload, event)
 		}
 	case eventtype.Create:
 		if s.eventHandlers.onCreate != nil {
@@ -202,7 +203,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onCreate(whPayload, event)
+			s.eventHandlers.onCreate(uri, whPayload, event)
 		}
 	case eventtype.Delete:
 		if s.eventHandlers.onDelete != nil {
@@ -211,7 +212,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onDelete(whPayload, event)
+			s.eventHandlers.onDelete(uri, whPayload, event)
 		}
 	case eventtype.Deployment:
 		if s.eventHandlers.onDeployment != nil {
@@ -220,7 +221,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onDeployment(whPayload, event)
+			s.eventHandlers.onDeployment(uri, whPayload, event)
 		}
 	case eventtype.DeploymentStatus:
 		if s.eventHandlers.onDeploymentStatus != nil {
@@ -229,7 +230,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onDeploymentStatus(whPayload, event)
+			s.eventHandlers.onDeploymentStatus(uri, whPayload, event)
 		}
 	case eventtype.Fork:
 		if s.eventHandlers.onFork != nil {
@@ -238,7 +239,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onFork(whPayload, event)
+			s.eventHandlers.onFork(uri, whPayload, event)
 		}
 	case eventtype.GitHubAppAuthorization:
 		if s.eventHandlers.onGitHubAppAuthorization != nil {
@@ -247,7 +248,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onGitHubAppAuthorization(whPayload, event)
+			s.eventHandlers.onGitHubAppAuthorization(uri, whPayload, event)
 		}
 	case eventtype.Gollum:
 		if s.eventHandlers.onGollum != nil {
@@ -256,7 +257,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onGollum(whPayload, event)
+			s.eventHandlers.onGollum(uri, whPayload, event)
 		}
 	case eventtype.Installation:
 		if s.eventHandlers.onInstallation != nil {
@@ -265,7 +266,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onInstallation(whPayload, event)
+			s.eventHandlers.onInstallation(uri, whPayload, event)
 		}
 	case eventtype.InstallationRepositories:
 		if s.eventHandlers.onInstallationRepositories != nil {
@@ -274,7 +275,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onInstallationRepositories(whPayload, event)
+			s.eventHandlers.onInstallationRepositories(uri, whPayload, event)
 		}
 	case eventtype.IssueComment:
 		if s.eventHandlers.onIssueComment != nil {
@@ -283,7 +284,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onIssueComment(whPayload, event)
+			s.eventHandlers.onIssueComment(uri, whPayload, event)
 		}
 	case eventtype.Issues:
 		if s.eventHandlers.onIssues != nil {
@@ -292,7 +293,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onIssues(whPayload, event)
+			s.eventHandlers.onIssues(uri, whPayload, event)
 		}
 	case eventtype.Label:
 		if s.eventHandlers.onLabel != nil {
@@ -301,7 +302,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onLabel(whPayload, event)
+			s.eventHandlers.onLabel(uri, whPayload, event)
 		}
 	case eventtype.MarketplacePurchase:
 		if s.eventHandlers.onMarketplacePurchase != nil {
@@ -310,7 +311,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onMarketplacePurchase(whPayload, event)
+			s.eventHandlers.onMarketplacePurchase(uri, whPayload, event)
 		}
 	case eventtype.Member:
 		if s.eventHandlers.onMember != nil {
@@ -319,7 +320,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onMember(whPayload, event)
+			s.eventHandlers.onMember(uri, whPayload, event)
 		}
 	case eventtype.Membership:
 		if s.eventHandlers.onMembership != nil {
@@ -328,7 +329,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onMembership(whPayload, event)
+			s.eventHandlers.onMembership(uri, whPayload, event)
 		}
 	case eventtype.Milestone:
 		if s.eventHandlers.onMilestone != nil {
@@ -337,7 +338,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onMilestone(whPayload, event)
+			s.eventHandlers.onMilestone(uri, whPayload, event)
 		}
 	case eventtype.Organization:
 		if s.eventHandlers.onOrganization != nil {
@@ -346,7 +347,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onOrganization(whPayload, event)
+			s.eventHandlers.onOrganization(uri, whPayload, event)
 		}
 	case eventtype.OrgBlock:
 		if s.eventHandlers.onOrgBlock != nil {
@@ -355,7 +356,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onOrgBlock(whPayload, event)
+			s.eventHandlers.onOrgBlock(uri, whPayload, event)
 		}
 	case eventtype.PageBuild:
 		if s.eventHandlers.onPageBuild != nil {
@@ -364,7 +365,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onPageBuild(whPayload, event)
+			s.eventHandlers.onPageBuild(uri, whPayload, event)
 		}
 	case eventtype.ProjectCard:
 		if s.eventHandlers.onProjectCard != nil {
@@ -373,7 +374,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onProjectCard(whPayload, event)
+			s.eventHandlers.onProjectCard(uri, whPayload, event)
 		}
 	case eventtype.ProjectColumn:
 		if s.eventHandlers.onProjectColumn != nil {
@@ -382,7 +383,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onProjectColumn(whPayload, event)
+			s.eventHandlers.onProjectColumn(uri, whPayload, event)
 		}
 	case eventtype.Project:
 		if s.eventHandlers.onProject != nil {
@@ -391,7 +392,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onProject(whPayload, event)
+			s.eventHandlers.onProject(uri, whPayload, event)
 		}
 	case eventtype.Public:
 		if s.eventHandlers.onPublic != nil {
@@ -400,7 +401,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onPublic(whPayload, event)
+			s.eventHandlers.onPublic(uri, whPayload, event)
 		}
 	case eventtype.PullRequest:
 		if s.eventHandlers.onPullRequest != nil {
@@ -409,7 +410,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onPullRequest(whPayload, event)
+			s.eventHandlers.onPullRequest(uri, whPayload, event)
 		}
 	case eventtype.PullRequestReview:
 		if s.eventHandlers.onPullRequestReview != nil {
@@ -418,7 +419,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onPullRequestReview(whPayload, event)
+			s.eventHandlers.onPullRequestReview(uri, whPayload, event)
 		}
 	case eventtype.PullRequestReviewComment:
 		if s.eventHandlers.onPullRequestReviewComment != nil {
@@ -427,7 +428,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onPullRequestReviewComment(whPayload, event)
+			s.eventHandlers.onPullRequestReviewComment(uri, whPayload, event)
 		}
 	case eventtype.Push:
 		if s.eventHandlers.onPush != nil {
@@ -436,7 +437,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onPush(whPayload, event)
+			s.eventHandlers.onPush(uri, whPayload, event)
 		}
 	case eventtype.Release:
 		if s.eventHandlers.onRelease != nil {
@@ -445,7 +446,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onRelease(whPayload, event)
+			s.eventHandlers.onRelease(uri, whPayload, event)
 		}
 	case eventtype.Repository:
 		if s.eventHandlers.onRepository != nil {
@@ -454,7 +455,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onRepository(whPayload, event)
+			s.eventHandlers.onRepository(uri, whPayload, event)
 		}
 	case eventtype.RepositoryVulnerabilityAlert:
 		if s.eventHandlers.onRepositoryVulnerabilityAlert != nil {
@@ -463,7 +464,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onRepositoryVulnerabilityAlert(whPayload, event)
+			s.eventHandlers.onRepositoryVulnerabilityAlert(uri, whPayload, event)
 		}
 	case eventtype.Status:
 		if s.eventHandlers.onStatus != nil {
@@ -472,7 +473,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onStatus(whPayload, event)
+			s.eventHandlers.onStatus(uri, whPayload, event)
 		}
 	case eventtype.Team:
 		if s.eventHandlers.onTeam != nil {
@@ -481,7 +482,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onTeam(whPayload, event)
+			s.eventHandlers.onTeam(uri, whPayload, event)
 		}
 	case eventtype.TeamAdd:
 		if s.eventHandlers.onTeamAdd != nil {
@@ -490,7 +491,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onTeamAdd(whPayload, event)
+			s.eventHandlers.onTeamAdd(uri, whPayload, event)
 		}
 	case eventtype.Watch:
 		if s.eventHandlers.onWatch != nil {
@@ -499,7 +500,7 @@ func (s *WebHook) handleEvents(eventType string, body []byte) error {
 			if err != nil {
 				return err
 			}
-			s.eventHandlers.onWatch(whPayload, event)
+			s.eventHandlers.onWatch(uri, whPayload, event)
 		}
 	default:
 		log.Printf("Unknow event type: %s", eventType)

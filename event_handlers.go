@@ -1,52 +1,56 @@
 package ghwebhook
 
-import "github.com/google/go-github/github"
+import (
+	"net/url"
+
+	"github.com/google/go-github/github"
+)
 
 // EventHandlers all event handlers
 type EventHandlers struct {
-	onPing func(*github.WebHookPayload, *github.PingEvent)
+	onPing func(*url.URL, *github.WebHookPayload, *github.PingEvent)
 
 	// TODO onContentReference            func(*github.WebHookPayload, *github.ContentReferenceEvent)
 	// TODO onRepositoryImport               func(*github.WebHookPayload, *github.RepositoryImportEvent)
 	// TODO onSecurityAdvisory               func(*github.WebHookPayload, *github.SecurityAdvisoryEvent)
 
-	onCheckRun                     func(*github.WebHookPayload, *github.CheckRunEvent)
-	onCheckSuite                   func(*github.WebHookPayload, *github.CheckSuiteEvent)
-	onCommitComment                func(*github.WebHookPayload, *github.CommitCommentEvent)
-	onCreate                       func(*github.WebHookPayload, *github.CreateEvent)
-	onDelete                       func(*github.WebHookPayload, *github.DeleteEvent)
-	onDeployment                   func(*github.WebHookPayload, *github.DeploymentEvent)
-	onDeploymentStatus             func(*github.WebHookPayload, *github.DeploymentStatusEvent)
-	onFork                         func(*github.WebHookPayload, *github.ForkEvent)
-	onGitHubAppAuthorization       func(*github.WebHookPayload, *github.GitHubAppAuthorizationEvent)
-	onGollum                       func(*github.WebHookPayload, *github.GollumEvent)
-	onInstallation                 func(*github.WebHookPayload, *github.InstallationEvent)
-	onInstallationRepositories     func(*github.WebHookPayload, *github.InstallationRepositoriesEvent)
-	onIssueComment                 func(*github.WebHookPayload, *github.IssueCommentEvent)
-	onIssues                       func(*github.WebHookPayload, *github.IssuesEvent)
-	onLabel                        func(*github.WebHookPayload, *github.LabelEvent)
-	onMarketplacePurchase          func(*github.WebHookPayload, *github.MarketplacePurchaseEvent)
-	onMember                       func(*github.WebHookPayload, *github.MemberEvent)
-	onMembership                   func(*github.WebHookPayload, *github.MembershipEvent)
-	onMilestone                    func(*github.WebHookPayload, *github.MilestoneEvent)
-	onOrganization                 func(*github.WebHookPayload, *github.OrganizationEvent)
-	onOrgBlock                     func(*github.WebHookPayload, *github.OrgBlockEvent)
-	onPageBuild                    func(*github.WebHookPayload, *github.PageBuildEvent)
-	onProjectCard                  func(*github.WebHookPayload, *github.ProjectCardEvent)
-	onProjectColumn                func(*github.WebHookPayload, *github.ProjectColumnEvent)
-	onProject                      func(*github.WebHookPayload, *github.ProjectEvent)
-	onPublic                       func(*github.WebHookPayload, *github.PublicEvent)
-	onPullRequest                  func(*github.WebHookPayload, *github.PullRequestEvent)
-	onPullRequestReview            func(*github.WebHookPayload, *github.PullRequestReviewEvent)
-	onPullRequestReviewComment     func(*github.WebHookPayload, *github.PullRequestReviewCommentEvent)
-	onPush                         func(*github.WebHookPayload, *github.PushEvent)
-	onRelease                      func(*github.WebHookPayload, *github.ReleaseEvent)
-	onRepository                   func(*github.WebHookPayload, *github.RepositoryEvent)
-	onRepositoryVulnerabilityAlert func(*github.WebHookPayload, *github.RepositoryVulnerabilityAlertEvent)
-	onStatus                       func(*github.WebHookPayload, *github.StatusEvent)
-	onTeam                         func(*github.WebHookPayload, *github.TeamEvent)
-	onTeamAdd                      func(*github.WebHookPayload, *github.TeamAddEvent)
-	onWatch                        func(*github.WebHookPayload, *github.WatchEvent)
+	onCheckRun                     func(*url.URL, *github.WebHookPayload, *github.CheckRunEvent)
+	onCheckSuite                   func(*url.URL, *github.WebHookPayload, *github.CheckSuiteEvent)
+	onCommitComment                func(*url.URL, *github.WebHookPayload, *github.CommitCommentEvent)
+	onCreate                       func(*url.URL, *github.WebHookPayload, *github.CreateEvent)
+	onDelete                       func(*url.URL, *github.WebHookPayload, *github.DeleteEvent)
+	onDeployment                   func(*url.URL, *github.WebHookPayload, *github.DeploymentEvent)
+	onDeploymentStatus             func(*url.URL, *github.WebHookPayload, *github.DeploymentStatusEvent)
+	onFork                         func(*url.URL, *github.WebHookPayload, *github.ForkEvent)
+	onGitHubAppAuthorization       func(*url.URL, *github.WebHookPayload, *github.GitHubAppAuthorizationEvent)
+	onGollum                       func(*url.URL, *github.WebHookPayload, *github.GollumEvent)
+	onInstallation                 func(*url.URL, *github.WebHookPayload, *github.InstallationEvent)
+	onInstallationRepositories     func(*url.URL, *github.WebHookPayload, *github.InstallationRepositoriesEvent)
+	onIssueComment                 func(*url.URL, *github.WebHookPayload, *github.IssueCommentEvent)
+	onIssues                       func(*url.URL, *github.WebHookPayload, *github.IssuesEvent)
+	onLabel                        func(*url.URL, *github.WebHookPayload, *github.LabelEvent)
+	onMarketplacePurchase          func(*url.URL, *github.WebHookPayload, *github.MarketplacePurchaseEvent)
+	onMember                       func(*url.URL, *github.WebHookPayload, *github.MemberEvent)
+	onMembership                   func(*url.URL, *github.WebHookPayload, *github.MembershipEvent)
+	onMilestone                    func(*url.URL, *github.WebHookPayload, *github.MilestoneEvent)
+	onOrganization                 func(*url.URL, *github.WebHookPayload, *github.OrganizationEvent)
+	onOrgBlock                     func(*url.URL, *github.WebHookPayload, *github.OrgBlockEvent)
+	onPageBuild                    func(*url.URL, *github.WebHookPayload, *github.PageBuildEvent)
+	onProjectCard                  func(*url.URL, *github.WebHookPayload, *github.ProjectCardEvent)
+	onProjectColumn                func(*url.URL, *github.WebHookPayload, *github.ProjectColumnEvent)
+	onProject                      func(*url.URL, *github.WebHookPayload, *github.ProjectEvent)
+	onPublic                       func(*url.URL, *github.WebHookPayload, *github.PublicEvent)
+	onPullRequest                  func(*url.URL, *github.WebHookPayload, *github.PullRequestEvent)
+	onPullRequestReview            func(*url.URL, *github.WebHookPayload, *github.PullRequestReviewEvent)
+	onPullRequestReviewComment     func(*url.URL, *github.WebHookPayload, *github.PullRequestReviewCommentEvent)
+	onPush                         func(*url.URL, *github.WebHookPayload, *github.PushEvent)
+	onRelease                      func(*url.URL, *github.WebHookPayload, *github.ReleaseEvent)
+	onRepository                   func(*url.URL, *github.WebHookPayload, *github.RepositoryEvent)
+	onRepositoryVulnerabilityAlert func(*url.URL, *github.WebHookPayload, *github.RepositoryVulnerabilityAlertEvent)
+	onStatus                       func(*url.URL, *github.WebHookPayload, *github.StatusEvent)
+	onTeam                         func(*url.URL, *github.WebHookPayload, *github.TeamEvent)
+	onTeamAdd                      func(*url.URL, *github.WebHookPayload, *github.TeamAddEvent)
+	onWatch                        func(*url.URL, *github.WebHookPayload, *github.WatchEvent)
 }
 
 // NewEventHandlers create a new event handlers.
@@ -55,223 +59,223 @@ func NewEventHandlers() *EventHandlers {
 }
 
 // OnPing Ping handler.
-func (c *EventHandlers) OnPing(eventHandler func(payload *github.WebHookPayload, event *github.PingEvent)) *EventHandlers {
+func (c *EventHandlers) OnPing(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.PingEvent)) *EventHandlers {
 	c.onPing = eventHandler
 	return c
 }
 
 // OnCheckRun CheckRun handler.
-func (c *EventHandlers) OnCheckRun(eventHandler func(payload *github.WebHookPayload, event *github.CheckRunEvent)) *EventHandlers {
+func (c *EventHandlers) OnCheckRun(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.CheckRunEvent)) *EventHandlers {
 	c.onCheckRun = eventHandler
 	return c
 }
 
 // OnCheckSuite CheckSuite handler.
-func (c *EventHandlers) OnCheckSuite(eventHandler func(*github.WebHookPayload, *github.CheckSuiteEvent)) *EventHandlers {
+func (c *EventHandlers) OnCheckSuite(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.CheckSuiteEvent)) *EventHandlers {
 	c.onCheckSuite = eventHandler
 	return c
 }
 
 // OnCommitComment CommitComment handler.
-func (c *EventHandlers) OnCommitComment(eventHandler func(payload *github.WebHookPayload, event *github.CommitCommentEvent)) *EventHandlers {
+func (c *EventHandlers) OnCommitComment(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.CommitCommentEvent)) *EventHandlers {
 	c.onCommitComment = eventHandler
 	return c
 }
 
 // OnCreate Create handler.
-func (c *EventHandlers) OnCreate(eventHandler func(payload *github.WebHookPayload, event *github.CreateEvent)) *EventHandlers {
+func (c *EventHandlers) OnCreate(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.CreateEvent)) *EventHandlers {
 	c.onCreate = eventHandler
 	return c
 }
 
 // OnDelete Delete handler.
-func (c *EventHandlers) OnDelete(eventHandler func(payload *github.WebHookPayload, event *github.DeleteEvent)) *EventHandlers {
+func (c *EventHandlers) OnDelete(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.DeleteEvent)) *EventHandlers {
 	c.onDelete = eventHandler
 	return c
 }
 
 // OnDeployment Deployment handler.
-func (c *EventHandlers) OnDeployment(eventHandler func(payload *github.WebHookPayload, event *github.DeploymentEvent)) *EventHandlers {
+func (c *EventHandlers) OnDeployment(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.DeploymentEvent)) *EventHandlers {
 	c.onDeployment = eventHandler
 	return c
 }
 
 // OnDeploymentStatus DeploymentStatus handler.
-func (c *EventHandlers) OnDeploymentStatus(eventHandler func(payload *github.WebHookPayload, event *github.DeploymentStatusEvent)) *EventHandlers {
+func (c *EventHandlers) OnDeploymentStatus(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.DeploymentStatusEvent)) *EventHandlers {
 	c.onDeploymentStatus = eventHandler
 	return c
 }
 
 // OnFork Fork handler.
-func (c *EventHandlers) OnFork(eventHandler func(payload *github.WebHookPayload, event *github.ForkEvent)) *EventHandlers {
+func (c *EventHandlers) OnFork(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.ForkEvent)) *EventHandlers {
 	c.onFork = eventHandler
 	return c
 }
 
 // OnGollum Gollum handler.
-func (c *EventHandlers) OnGollum(eventHandler func(payload *github.WebHookPayload, event *github.GollumEvent)) *EventHandlers {
+func (c *EventHandlers) OnGollum(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.GollumEvent)) *EventHandlers {
 	c.onGollum = eventHandler
 	return c
 }
 
 // OnInstallation Installation handler.
-func (c *EventHandlers) OnInstallation(eventHandler func(payload *github.WebHookPayload, event *github.InstallationEvent)) *EventHandlers {
+func (c *EventHandlers) OnInstallation(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.InstallationEvent)) *EventHandlers {
 	c.onInstallation = eventHandler
 	return c
 }
 
 // OnInstallationRepositories InstallationRepositories handler.
-func (c *EventHandlers) OnInstallationRepositories(eventHandler func(payload *github.WebHookPayload, event *github.InstallationRepositoriesEvent)) *EventHandlers {
+func (c *EventHandlers) OnInstallationRepositories(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.InstallationRepositoriesEvent)) *EventHandlers {
 	c.onInstallationRepositories = eventHandler
 	return c
 }
 
 // OnIssueComment IssueComment handler.
-func (c *EventHandlers) OnIssueComment(eventHandler func(payload *github.WebHookPayload, event *github.IssueCommentEvent)) *EventHandlers {
+func (c *EventHandlers) OnIssueComment(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.IssueCommentEvent)) *EventHandlers {
 	c.onIssueComment = eventHandler
 	return c
 }
 
 // OnIssues Issues handler.
-func (c *EventHandlers) OnIssues(eventHandler func(payload *github.WebHookPayload, event *github.IssuesEvent)) *EventHandlers {
+func (c *EventHandlers) OnIssues(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.IssuesEvent)) *EventHandlers {
 	c.onIssues = eventHandler
 	return c
 }
 
 // OnLabel Label handler.
-func (c *EventHandlers) OnLabel(eventHandler func(payload *github.WebHookPayload, event *github.LabelEvent)) *EventHandlers {
+func (c *EventHandlers) OnLabel(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.LabelEvent)) *EventHandlers {
 	c.onLabel = eventHandler
 	return c
 }
 
 // OnMarketplacePurchase MarketplacePurchase handler.
-func (c *EventHandlers) OnMarketplacePurchase(eventHandler func(payload *github.WebHookPayload, event *github.MarketplacePurchaseEvent)) *EventHandlers {
+func (c *EventHandlers) OnMarketplacePurchase(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.MarketplacePurchaseEvent)) *EventHandlers {
 	c.onMarketplacePurchase = eventHandler
 	return c
 }
 
 // OnMember Member handler.
-func (c *EventHandlers) OnMember(eventHandler func(payload *github.WebHookPayload, event *github.MemberEvent)) *EventHandlers {
+func (c *EventHandlers) OnMember(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.MemberEvent)) *EventHandlers {
 	c.onMember = eventHandler
 	return c
 }
 
 // OnMembership Membership handler.
-func (c *EventHandlers) OnMembership(eventHandler func(payload *github.WebHookPayload, event *github.MembershipEvent)) *EventHandlers {
+func (c *EventHandlers) OnMembership(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.MembershipEvent)) *EventHandlers {
 	c.onMembership = eventHandler
 	return c
 }
 
 // OnMilestone Milestone handler.
-func (c *EventHandlers) OnMilestone(eventHandler func(payload *github.WebHookPayload, event *github.MilestoneEvent)) *EventHandlers {
+func (c *EventHandlers) OnMilestone(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.MilestoneEvent)) *EventHandlers {
 	c.onMilestone = eventHandler
 	return c
 }
 
 // OnOrganization Organization handler.
-func (c *EventHandlers) OnOrganization(eventHandler func(payload *github.WebHookPayload, event *github.OrganizationEvent)) *EventHandlers {
+func (c *EventHandlers) OnOrganization(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.OrganizationEvent)) *EventHandlers {
 	c.onOrganization = eventHandler
 	return c
 }
 
 // OnOrgBlock OrgBlock handler.
-func (c *EventHandlers) OnOrgBlock(eventHandler func(payload *github.WebHookPayload, event *github.OrgBlockEvent)) *EventHandlers {
+func (c *EventHandlers) OnOrgBlock(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.OrgBlockEvent)) *EventHandlers {
 	c.onOrgBlock = eventHandler
 	return c
 }
 
 // OnPageBuild PageBuild handler.
-func (c *EventHandlers) OnPageBuild(eventHandler func(payload *github.WebHookPayload, event *github.PageBuildEvent)) *EventHandlers {
+func (c *EventHandlers) OnPageBuild(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.PageBuildEvent)) *EventHandlers {
 	c.onPageBuild = eventHandler
 	return c
 }
 
 // OnProjectCard ProjectCard handler.
-func (c *EventHandlers) OnProjectCard(eventHandler func(payload *github.WebHookPayload, event *github.ProjectCardEvent)) *EventHandlers {
+func (c *EventHandlers) OnProjectCard(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.ProjectCardEvent)) *EventHandlers {
 	c.onProjectCard = eventHandler
 	return c
 }
 
 // OnProjectColumn ProjectColumn handler.
-func (c *EventHandlers) OnProjectColumn(eventHandler func(payload *github.WebHookPayload, event *github.ProjectColumnEvent)) *EventHandlers {
+func (c *EventHandlers) OnProjectColumn(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.ProjectColumnEvent)) *EventHandlers {
 	c.onProjectColumn = eventHandler
 	return c
 }
 
 // OnProject Project handler.
-func (c *EventHandlers) OnProject(eventHandler func(payload *github.WebHookPayload, event *github.ProjectEvent)) *EventHandlers {
+func (c *EventHandlers) OnProject(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.ProjectEvent)) *EventHandlers {
 	c.onProject = eventHandler
 	return c
 }
 
 // OnPublic Public handler.
-func (c *EventHandlers) OnPublic(eventHandler func(payload *github.WebHookPayload, event *github.PublicEvent)) *EventHandlers {
+func (c *EventHandlers) OnPublic(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.PublicEvent)) *EventHandlers {
 	c.onPublic = eventHandler
 	return c
 }
 
 // OnPullRequest PullRequest handler.
-func (c *EventHandlers) OnPullRequest(eventHandler func(payload *github.WebHookPayload, event *github.PullRequestEvent)) *EventHandlers {
+func (c *EventHandlers) OnPullRequest(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.PullRequestEvent)) *EventHandlers {
 	c.onPullRequest = eventHandler
 	return c
 }
 
 // OnPullRequestReview PullRequestReview handler.
-func (c *EventHandlers) OnPullRequestReview(eventHandler func(payload *github.WebHookPayload, event *github.PullRequestReviewEvent)) *EventHandlers {
+func (c *EventHandlers) OnPullRequestReview(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.PullRequestReviewEvent)) *EventHandlers {
 	c.onPullRequestReview = eventHandler
 	return c
 }
 
 // OnPullRequestReviewComment PullRequestReviewComment handler.
-func (c *EventHandlers) OnPullRequestReviewComment(eventHandler func(payload *github.WebHookPayload, event *github.PullRequestReviewCommentEvent)) *EventHandlers {
+func (c *EventHandlers) OnPullRequestReviewComment(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.PullRequestReviewCommentEvent)) *EventHandlers {
 	c.onPullRequestReviewComment = eventHandler
 	return c
 }
 
 // OnPush Push handler.
-func (c *EventHandlers) OnPush(eventHandler func(payload *github.WebHookPayload, event *github.PushEvent)) *EventHandlers {
+func (c *EventHandlers) OnPush(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.PushEvent)) *EventHandlers {
 	c.onPush = eventHandler
 	return c
 }
 
 // OnRelease Release handler.
-func (c *EventHandlers) OnRelease(eventHandler func(payload *github.WebHookPayload, event *github.ReleaseEvent)) *EventHandlers {
+func (c *EventHandlers) OnRelease(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.ReleaseEvent)) *EventHandlers {
 	c.onRelease = eventHandler
 	return c
 }
 
 // OnRepository Repository handler.
-func (c *EventHandlers) OnRepository(eventHandler func(payload *github.WebHookPayload, event *github.RepositoryEvent)) *EventHandlers {
+func (c *EventHandlers) OnRepository(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.RepositoryEvent)) *EventHandlers {
 	c.onRepository = eventHandler
 	return c
 }
 
 // OnRepositoryVulnerabilityAlert RepositoryVulnerabilityAlert handler.
-func (c *EventHandlers) OnRepositoryVulnerabilityAlert(eventHandler func(payload *github.WebHookPayload, event *github.RepositoryVulnerabilityAlertEvent)) *EventHandlers {
+func (c *EventHandlers) OnRepositoryVulnerabilityAlert(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.RepositoryVulnerabilityAlertEvent)) *EventHandlers {
 	c.onRepositoryVulnerabilityAlert = eventHandler
 	return c
 }
 
 // OnStatus Status handler.
-func (c *EventHandlers) OnStatus(eventHandler func(payload *github.WebHookPayload, event *github.StatusEvent)) *EventHandlers {
+func (c *EventHandlers) OnStatus(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.StatusEvent)) *EventHandlers {
 	c.onStatus = eventHandler
 	return c
 }
 
 // OnTeam Team handler.
-func (c *EventHandlers) OnTeam(eventHandler func(payload *github.WebHookPayload, event *github.TeamEvent)) *EventHandlers {
+func (c *EventHandlers) OnTeam(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.TeamEvent)) *EventHandlers {
 	c.onTeam = eventHandler
 	return c
 }
 
 // OnTeamAdd TeamAdd handler.
-func (c *EventHandlers) OnTeamAdd(eventHandler func(payload *github.WebHookPayload, event *github.TeamAddEvent)) *EventHandlers {
+func (c *EventHandlers) OnTeamAdd(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.TeamAddEvent)) *EventHandlers {
 	c.onTeamAdd = eventHandler
 	return c
 }
 
 // OnWatch Watch handler.
-func (c *EventHandlers) OnWatch(eventHandler func(payload *github.WebHookPayload, event *github.WatchEvent)) *EventHandlers {
+func (c *EventHandlers) OnWatch(eventHandler func(uri *url.URL, payload *github.WebHookPayload, event *github.WatchEvent)) *EventHandlers {
 	c.onWatch = eventHandler
 	return c
 }

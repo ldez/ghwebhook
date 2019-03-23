@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"path/filepath"
 	"testing"
 
@@ -166,7 +167,7 @@ func Test_handleEvents(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
 
-			err := webHook.handleEvents(test.eventType, test.body)
+			err := webHook.handleEvents(nil, test.eventType, test.body)
 
 			if test.expectedError && err == nil {
 				t.Errorf("Got no error, but want an error.")
@@ -190,7 +191,7 @@ func Test_handleEvents_payload(t *testing.T) {
 			eventType:   eventtype.Issues,
 			fixtureFile: "gh-issue_opened.json",
 			eventHandlers: NewEventHandlers().
-				OnIssues(func(payload *github.WebHookPayload, event *github.IssuesEvent) {
+				OnIssues(func(uri *url.URL, payload *github.WebHookPayload, event *github.IssuesEvent) {
 					assertEventAction(t, event, "opened")
 				}),
 			expectedHandler: func(t *testing.T, eh *EventHandlers) {
@@ -204,7 +205,7 @@ func Test_handleEvents_payload(t *testing.T) {
 			eventType:   eventtype.PullRequest,
 			fixtureFile: "gh-pr_opened.json",
 			eventHandlers: NewEventHandlers().
-				OnPullRequest(func(payload *github.WebHookPayload, event *github.PullRequestEvent) {
+				OnPullRequest(func(uri *url.URL, payload *github.WebHookPayload, event *github.PullRequestEvent) {
 					assertEventAction(t, event, "opened")
 				}),
 			expectedHandler: func(t *testing.T, eh *EventHandlers) {
@@ -218,7 +219,7 @@ func Test_handleEvents_payload(t *testing.T) {
 			eventType:   eventtype.Ping,
 			fixtureFile: "gh-ping.json",
 			eventHandlers: NewEventHandlers().
-				OnPing(func(payload *github.WebHookPayload, event *github.PingEvent) {
+				OnPing(func(uri *url.URL, payload *github.WebHookPayload, event *github.PingEvent) {
 					if event == nil {
 						t.Error("Got nil, want an event.")
 					}
@@ -242,7 +243,7 @@ func Test_handleEvents_payload(t *testing.T) {
 			t.Parallel()
 
 			webHook := NewWebHook(test.eventHandlers)
-			err := webHook.handleEvents(test.eventType, mustReadFixtureFile(test.fixtureFile))
+			err := webHook.handleEvents(nil, test.eventType, mustReadFixtureFile(test.fixtureFile))
 
 			if err != nil {
 				t.Errorf("Got %v, but want no error.", err)
