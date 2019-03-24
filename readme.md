@@ -4,6 +4,8 @@
 [![Build Status](https://travis-ci.org/ldez/ghwebhook.svg?branch=master)](https://travis-ci.org/ldez/ghwebhook)
 [![godoc](https://godoc.org/github.com/ldez/ghwebhook?status.svg)](https://godoc.org/github.com/ldez/ghwebhook)
 
+[![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/ldez)
+
 Create a Github WebHook in 5 seconds!
 
 ## Description
