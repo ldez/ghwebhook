@@ -4,9 +4,6 @@ GOFILES := $(shell git ls-files '*.go' | grep -v '^vendor/')
 
 default: clean check test-unit build fmt
 
-dependencies:
-	dep ensure
-
 clean:
 	rm -f cover.out
 
