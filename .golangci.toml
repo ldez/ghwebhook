@@ -29,14 +29,24 @@
     "dupl",
     "prealloc",
     "bodyclose",
+    "wsl",
+    "godox",
   ]
 
 [issues]
   exclude-use-default = false
   max-per-linter = 0
   max-same-issues = 0
-  exclude = []
+  exclude = [
+    "ST1000: at least one file in a package should have a package comment"
+  ]
+
   [[issues.exclude-rules]]
     path = "webhook.go"
-    text = "cyclomatic complexity (\\d+) of func `\\(\\*WebHook\\)\\.handleEvents` is high"
-
+    text = "(cyclomatic|cognitive) complexity (\\d+) of func `\\(\\*WebHook\\)\\.handleEvents` is high"
+  [[issues.exclude-rules]]
+    path = "webhook.go"
+    text = "Function '(ServeHTTP|handleEvents)' has too many statements"
+  [[issues.exclude-rules]]
+    path = "(.+)_test.go"
+    linters = ["funlen"]
