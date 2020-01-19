@@ -24,7 +24,7 @@ import (
 	"log"
 	"net/url"
 
-	"github.com/google/go-github/github"
+	"github.com/google/go-github/github/v29"
 	ghw "github.com/ldez/ghwebhook"
 )
 
@@ -58,7 +58,7 @@ import (
 	"log"
 	"net/url"
 
-	"github.com/google/go-github/github"
+	"github.com/google/go-github/github/v29"
 	ghw "github.com/ldez/ghwebhook"
 	"github.com/ldez/ghwebhook/eventtype"
 )

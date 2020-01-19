@@ -14,7 +14,7 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/google/go-github/v27/github"
+	"github.com/google/go-github/v29/github"
 	"github.com/ldez/ghwebhook/v2/eventtype"
 )
 
