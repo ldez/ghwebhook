@@ -3,7 +3,7 @@ package ghwebhook
 import (
 	"net/url"
 
-	"github.com/google/go-github/v29/github"
+	"github.com/google/go-github/v30/github"
 )
 
 // EventHandlers all event handlers
