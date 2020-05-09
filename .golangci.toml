@@ -31,6 +31,8 @@
     "bodyclose",
     "wsl",
     "godox",
+    "goerr113",
+    "testpackage",
   ]
 
 [issues]

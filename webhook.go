@@ -24,7 +24,7 @@ const (
 	defaultEventTypes = eventtype.Push
 )
 
-// WebHook server
+// WebHook server.
 type WebHook struct {
 	port          int            // default: 80
 	path          *regexp.Regexp // default: "/postreceive"

@@ -6,7 +6,7 @@ import (
 	"github.com/google/go-github/v31/github"
 )
 
-// EventHandlers all event handlers
+// EventHandlers all event handlers.
 type EventHandlers struct {
 	onPing func(*url.URL, *github.WebHookPayload, *github.PingEvent)
 
