@@ -244,10 +244,10 @@ func Test_handleEvents_payload(t *testing.T) {
 
 			webHook := NewWebHook(test.eventHandlers)
 			err := webHook.handleEvents(nil, test.eventType, mustReadFixtureFile(test.fixtureFile))
-
 			if err != nil {
 				t.Errorf("Got %v, but want no error.", err)
 			}
+
 			test.expectedHandler(t, test.eventHandlers)
 		})
 	}
