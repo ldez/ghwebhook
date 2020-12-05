@@ -1,8 +1,8 @@
 # GHWebHook
 
 [![release](https://img.shields.io/github/tag/ldez/ghwebhook.svg)](https://github.com/ldez/ghwebhook/releases)
-[![Build Status](https://travis-ci.com/ldez/ghwebhook.svg?branch=master)](https://travis-ci.com/ldez/ghwebhook)
-[![godoc](https://godoc.org/github.com/ldez/ghwebhook?status.svg)](https://godoc.org/github.com/ldez/ghwebhook)
+[![Build Status](https://github.com/ldez/ghwebhook/workflows/Main/badge.svg?branch=master)](https://github.com/ldez/ghwebhook/actions)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/ldez/ghwebhook)](https://pkg.go.dev/github.com/ldez/ghwebhook/v2)
 
 [![Sponsor](https://img.shields.io/badge/Sponsor%20me-%E2%9D%A4%EF%B8%8F-pink)](https://github.com/sponsors/ldez)
 
