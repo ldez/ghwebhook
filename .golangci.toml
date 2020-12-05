@@ -32,7 +32,11 @@
     "wsl",
     "godox",
     "goerr113",
+    "wrapcheck",
     "testpackage",
+    "paralleltest",
+    "tparallel",
+    "nestif",
     "nlreturn",
   ]
 

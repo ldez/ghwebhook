@@ -1,8 +1,6 @@
-.PHONY: clean check test-unit build fmt
+.PHONY: clean check test-unit build
 
-GOFILES := $(shell git ls-files '*.go' | grep -v '^vendor/')
-
-default: clean check test-unit build fmt
+default: clean check test-unit build
 
 clean:
 	rm -f cover.out
@@ -15,6 +13,3 @@ test-unit:
 
 check:
 	golangci-lint run
-
-fmt:
-	gofmt -s -l -w $(GOFILES)

@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/google/go-github/v32/github"
+	"github.com/google/go-github/v33/github"
 	"github.com/ldez/ghwebhook/v2/eventtype"
 )
 
@@ -221,7 +221,7 @@ func Test_handleEvents_payload(t *testing.T) {
 			eventHandlers: NewEventHandlers().
 				OnPing(func(uri *url.URL, payload *github.WebHookPayload, event *github.PingEvent) {
 					if event == nil {
-						t.Error("Got nil, want an event.")
+						t.Fatal("Got nil, want an event.")
 					}
 
 					expectedZen := "Mind your words, they are important."
@@ -255,8 +255,9 @@ func Test_handleEvents_payload(t *testing.T) {
 
 func assertEventAction(t *testing.T, event event, action string) {
 	if event == nil {
-		t.Error("Got nil, want an event.")
+		t.Fatal("Got nil, want an event.")
 	}
+
 	if event.GetAction() != action {
 		t.Errorf("Got %s, expected %s", event.GetAction(), action)
 	}
