@@ -14,7 +14,7 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/google/go-github/v33/github"
+	"github.com/google/go-github/v37/github"
 	"github.com/ldez/ghwebhook/v2/eventtype"
 )
 
@@ -135,7 +135,7 @@ func isAcceptedEventType(authorizedEventTypes []string, eventType string) bool {
 	return false
 }
 
-func validateSignature(signature string, secret string, body []byte) error {
+func validateSignature(signature, secret string, body []byte) error {
 	mac := hmac.New(sha1.New, []byte(secret))
 
 	_, err := mac.Write(body)

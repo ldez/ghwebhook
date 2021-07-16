@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/google/go-github/v33/github"
+	"github.com/google/go-github/v37/github"
 	"github.com/ldez/ghwebhook/v2/eventtype"
 )
 
@@ -195,6 +195,8 @@ func Test_handleEvents_payload(t *testing.T) {
 					assertEventAction(t, event, "opened")
 				}),
 			expectedHandler: func(t *testing.T, eh *EventHandlers) {
+				t.Helper()
+
 				if eh.onIssues == nil {
 					t.Error("Got nil, want onIssues function")
 				}
@@ -209,6 +211,8 @@ func Test_handleEvents_payload(t *testing.T) {
 					assertEventAction(t, event, "opened")
 				}),
 			expectedHandler: func(t *testing.T, eh *EventHandlers) {
+				t.Helper()
+
 				if eh.onPullRequest == nil {
 					t.Error("Got nil, want onPullRequest function")
 				}
@@ -230,6 +234,8 @@ func Test_handleEvents_payload(t *testing.T) {
 					}
 				}),
 			expectedHandler: func(t *testing.T, eh *EventHandlers) {
+				t.Helper()
+
 				if eh.onPing == nil {
 					t.Error("Got nil, want onPing function")
 				}
@@ -254,6 +260,8 @@ func Test_handleEvents_payload(t *testing.T) {
 }
 
 func assertEventAction(t *testing.T, event event, action string) {
+	t.Helper()
+
 	if event == nil {
 		t.Fatal("Got nil, want an event.")
 	}
