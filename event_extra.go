@@ -1,6 +1,6 @@
 package ghwebhook
 
-import "github.com/google/go-github/v37/github"
+import "github.com/google/go-github/v42/github"
 
 // ContentReferenceEvent is triggered when the body or comment of an issue or pull request includes a URL that matches a configured content reference domain.
 // Only GitHub Apps can receive this event.
