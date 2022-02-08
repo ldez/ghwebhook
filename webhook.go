@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
@@ -85,7 +85,7 @@ func (s *WebHook) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		defer func() { _ = r.Body.Close() }()
 	}
 
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("Failed to read request body: %v", err)
 		http.Error(w, "", http.StatusInternalServerError)

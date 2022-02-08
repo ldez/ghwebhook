@@ -3,10 +3,10 @@ package ghwebhook
 import (
 	"bytes"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -280,7 +280,7 @@ func fixturePath(filename string) string {
 }
 
 func mustReadFixtureFile(filename string) []byte {
-	content, err := ioutil.ReadFile(fixturePath(filename))
+	content, err := os.ReadFile(fixturePath(filename))
 	if err != nil {
 		panic(err)
 	}

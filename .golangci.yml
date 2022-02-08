@@ -76,6 +76,8 @@ linters:
     - ifshort
     - forcetypeassert
     - gosec
+    - maintidx
+    - varnamelen
 
 issues:
   exclude-use-default: false
