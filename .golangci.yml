@@ -59,6 +59,7 @@ linters:
     - golint # deprecated
     - sqlclosecheck # not relevant (SQL)
     - rowserrcheck # not relevant (SQL)
+    - execinquery # not relevant (SQL)
     - cyclop # duplicate of gocyclo
     - lll
     - dupl
@@ -69,6 +70,7 @@ linters:
     - wrapcheck
     - exhaustive
     - exhaustivestruct
+    - exhaustruct
     - testpackage
     - tparallel
     - paralleltest
