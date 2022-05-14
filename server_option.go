@@ -3,7 +3,7 @@ package ghwebhook
 import (
 	"regexp"
 
-	"github.com/ldez/ghwebhook/v2/eventtype"
+	"github.com/ldez/ghwebhook/v3/eventtype"
 )
 
 type serverOption func(*WebHook)
@@ -44,17 +44,21 @@ func Debug(server *WebHook) {
 // WithAllEventTypes accept all possible event types.
 func WithAllEventTypes(server *WebHook) {
 	server.eventTypes = []string{
-		eventtype.Ping,
+		eventtype.BranchProtectionRule,
 		eventtype.CheckRun,
 		eventtype.CheckSuite,
+		eventtype.CodeScanningAlert,
 		eventtype.CommitComment,
 		eventtype.ContentReference,
 		eventtype.Create,
 		eventtype.Delete,
+		eventtype.DeployKey,
 		eventtype.Deployment,
 		eventtype.DeploymentStatus,
+		eventtype.Discussion,
+		eventtype.DiscussionComment,
 		eventtype.Fork,
-		eventtype.GitHubAppAuthorization,
+		eventtype.GithubAppAuthorization,
 		eventtype.Gollum,
 		eventtype.Installation,
 		eventtype.InstallationRepositories,
@@ -64,26 +68,36 @@ func WithAllEventTypes(server *WebHook) {
 		eventtype.MarketplacePurchase,
 		eventtype.Member,
 		eventtype.Membership,
+		eventtype.Meta,
 		eventtype.Milestone,
 		eventtype.Organization,
 		eventtype.OrgBlock,
+		eventtype.Package,
 		eventtype.PageBuild,
+		eventtype.Ping,
+		eventtype.Project,
 		eventtype.ProjectCard,
 		eventtype.ProjectColumn,
-		eventtype.Project,
 		eventtype.Public,
 		eventtype.PullRequest,
 		eventtype.PullRequestReview,
 		eventtype.PullRequestReviewComment,
+		eventtype.PullRequestReviewThread,
 		eventtype.Push,
 		eventtype.Release,
 		eventtype.Repository,
+		eventtype.RepositoryDispatch,
 		eventtype.RepositoryImport,
 		eventtype.RepositoryVulnerabilityAlert,
 		eventtype.SecurityAdvisory,
+		eventtype.Sponsorship,
+		eventtype.Star,
 		eventtype.Status,
 		eventtype.Team,
 		eventtype.TeamAdd,
 		eventtype.Watch,
+		eventtype.WorkflowDispatch,
+		eventtype.WorkflowJob,
+		eventtype.WorkflowRun,
 	}
 }

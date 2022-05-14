@@ -1,21 +1,15 @@
 package ghwebhook
 
 import (
-	"crypto/hmac"
-	"crypto/sha1"
-	"encoding/hex"
-	"encoding/json"
-	"errors"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"net/url"
 	"regexp"
 	"strconv"
 
-	"github.com/google/go-github/v42/github"
-	"github.com/ldez/ghwebhook/v2/eventtype"
+	"github.com/google/go-github/v44/github"
+	"github.com/ldez/ghwebhook/v3/eventtype"
 )
 
 const (
@@ -63,7 +57,8 @@ func (s *WebHook) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !s.path.MatchString(r.URL.Path) {
+	uri := r.URL
+	if !s.path.MatchString(uri.Path) {
 		http.NotFound(w, r)
 		return
 	}
@@ -85,42 +80,30 @@ func (s *WebHook) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		defer func() { _ = r.Body.Close() }()
 	}
 
-	body, err := io.ReadAll(r.Body)
+	payload, err := github.ValidatePayload(r, []byte(s.secret))
 	if err != nil {
-		log.Printf("Failed to read request body: %v", err)
-		http.Error(w, "", http.StatusInternalServerError)
+		log.Printf("invalid payload: %v: %s", err, string(payload))
+		http.Error(w, "invalid payload", http.StatusForbidden)
 		return
 	}
 
-	if s.secret != "" {
-		signature := r.Header.Get("X-Hub-Signature")
-		if signature == "" {
-			log.Printf("Missing X-Hub-Signature")
-			http.Error(w, "403 Forbidden", http.StatusForbidden)
-			return
-		}
-
-		errSign := validateSignature(signature, s.secret, body)
-		if errSign != nil {
-			log.Print(errSign)
-			http.Error(w, "403 Forbidden", http.StatusForbidden)
-			return
-		}
+	webHookType := github.WebHookType(r)
+	event, err := github.ParseWebHook(webHookType, payload)
+	if err != nil {
+		log.Printf("%s: payload parsing: %v: %s", webHookType, err, string(payload))
+		http.Error(w, "payload parsing", http.StatusBadRequest)
+		return
 	}
 
-	if s.debug {
-		log.Println(string(body))
-	}
-
-	err = s.handleEvents(r.URL, eventType, body)
+	err = s.handleEvents(uri, event)
 	if err != nil {
 		log.Printf("Failed to unmashall request body: %v", err)
-		log.Printf("Failed to unmashall request body: %s", string(body))
+		log.Printf("Failed to unmashall request body: %s", string(payload))
 		http.Error(w, "", http.StatusInternalServerError)
 		return
 	}
 
-	fmt.Fprint(w, "Event received.")
+	_, _ = fmt.Fprintf(w, `{"message": "Event %s received"}`, webHookType)
 }
 
 func isAcceptedEventType(authorizedEventTypes []string, eventType string) bool {
@@ -135,414 +118,219 @@ func isAcceptedEventType(authorizedEventTypes []string, eventType string) bool {
 	return false
 }
 
-func validateSignature(signature, secret string, body []byte) error {
-	mac := hmac.New(sha1.New, []byte(secret))
-
-	_, err := mac.Write(body)
-	if err != nil {
-		return err
-	}
-
-	expectedMAC := mac.Sum(nil)
-	expectedSig := "sha1=" + hex.EncodeToString(expectedMAC)
-
-	if !hmac.Equal([]byte(expectedSig), []byte(signature)) {
-		return errors.New("signature verification failed")
-	}
-
-	return nil
-}
-
-func (s *WebHook) handleEvents(uri *url.URL, eventType string, body []byte) error {
-	whPayload, err := parseWebHookPayload(body)
-	if err != nil {
-		return err
-	}
-
-	switch eventType {
-	case eventtype.Ping:
-		if s.eventHandlers.onPing != nil {
-			event := &github.PingEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onPing(uri, whPayload, event)
+func (s *WebHook) handleEvents(uri *url.URL, rawEvent interface{}) error {
+	switch event := rawEvent.(type) {
+	case *github.BranchProtectionRuleEvent:
+		if s.eventHandlers.onBranchProtectionRule != nil {
+			s.eventHandlers.onBranchProtectionRule(uri, event)
 		}
-	case eventtype.CheckRun:
+	case *github.CheckRunEvent:
 		if s.eventHandlers.onCheckRun != nil {
-			event := &github.CheckRunEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onCheckRun(uri, whPayload, event)
+			s.eventHandlers.onCheckRun(uri, event)
 		}
-	case eventtype.CheckSuite:
+	case *github.CheckSuiteEvent:
 		if s.eventHandlers.onCheckSuite != nil {
-			event := &github.CheckSuiteEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onCheckSuite(uri, whPayload, event)
+			s.eventHandlers.onCheckSuite(uri, event)
 		}
-	case eventtype.CommitComment:
+	case *github.CommitCommentEvent:
 		if s.eventHandlers.onCommitComment != nil {
-			event := &github.CommitCommentEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onCommitComment(uri, whPayload, event)
+			s.eventHandlers.onCommitComment(uri, event)
 		}
-	case eventtype.ContentReference:
+	case *github.ContentReferenceEvent:
 		if s.eventHandlers.onContentReference != nil {
-			event := &ContentReferenceEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onContentReference(uri, whPayload, event)
+			s.eventHandlers.onContentReference(uri, event)
 		}
-	case eventtype.Create:
+	case *github.CreateEvent:
 		if s.eventHandlers.onCreate != nil {
-			event := &github.CreateEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onCreate(uri, whPayload, event)
+			s.eventHandlers.onCreate(uri, event)
 		}
-	case eventtype.Delete:
+	case *github.DeleteEvent:
 		if s.eventHandlers.onDelete != nil {
-			event := &github.DeleteEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onDelete(uri, whPayload, event)
+			s.eventHandlers.onDelete(uri, event)
 		}
-	case eventtype.Deployment:
+	case *github.DeployKeyEvent:
+		if s.eventHandlers.onDeployKey != nil {
+			s.eventHandlers.onDeployKey(uri, event)
+		}
+	case *github.DeploymentEvent:
 		if s.eventHandlers.onDeployment != nil {
-			event := &github.DeploymentEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onDeployment(uri, whPayload, event)
+			s.eventHandlers.onDeployment(uri, event)
 		}
-	case eventtype.DeploymentStatus:
+	case *github.DeploymentStatusEvent:
 		if s.eventHandlers.onDeploymentStatus != nil {
-			event := &github.DeploymentStatusEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onDeploymentStatus(uri, whPayload, event)
+			s.eventHandlers.onDeploymentStatus(uri, event)
 		}
-	case eventtype.Fork:
+	case *github.DiscussionEvent:
+		if s.eventHandlers.onDiscussion != nil {
+			s.eventHandlers.onDiscussion(uri, event)
+		}
+	case *github.ForkEvent:
 		if s.eventHandlers.onFork != nil {
-			event := &github.ForkEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onFork(uri, whPayload, event)
+			s.eventHandlers.onFork(uri, event)
 		}
-	case eventtype.GitHubAppAuthorization:
+	case *github.GitHubAppAuthorizationEvent:
 		if s.eventHandlers.onGitHubAppAuthorization != nil {
-			event := &github.GitHubAppAuthorizationEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onGitHubAppAuthorization(uri, whPayload, event)
+			s.eventHandlers.onGitHubAppAuthorization(uri, event)
 		}
-	case eventtype.Gollum:
+	case *github.GollumEvent:
 		if s.eventHandlers.onGollum != nil {
-			event := &github.GollumEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onGollum(uri, whPayload, event)
+			s.eventHandlers.onGollum(uri, event)
 		}
-	case eventtype.Installation:
+	case *github.InstallationEvent:
 		if s.eventHandlers.onInstallation != nil {
-			event := &github.InstallationEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onInstallation(uri, whPayload, event)
+			s.eventHandlers.onInstallation(uri, event)
 		}
-	case eventtype.InstallationRepositories:
+	case *github.InstallationRepositoriesEvent:
 		if s.eventHandlers.onInstallationRepositories != nil {
-			event := &github.InstallationRepositoriesEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onInstallationRepositories(uri, whPayload, event)
+			s.eventHandlers.onInstallationRepositories(uri, event)
 		}
-	case eventtype.IssueComment:
+	case *github.IssueCommentEvent:
 		if s.eventHandlers.onIssueComment != nil {
-			event := &github.IssueCommentEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onIssueComment(uri, whPayload, event)
+			s.eventHandlers.onIssueComment(uri, event)
 		}
-	case eventtype.Issues:
+	case *github.IssuesEvent:
 		if s.eventHandlers.onIssues != nil {
-			event := &github.IssuesEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onIssues(uri, whPayload, event)
+			s.eventHandlers.onIssues(uri, event)
 		}
-	case eventtype.Label:
+	case *github.LabelEvent:
 		if s.eventHandlers.onLabel != nil {
-			event := &github.LabelEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onLabel(uri, whPayload, event)
+			s.eventHandlers.onLabel(uri, event)
 		}
-	case eventtype.MarketplacePurchase:
+	case *github.MarketplacePurchaseEvent:
 		if s.eventHandlers.onMarketplacePurchase != nil {
-			event := &github.MarketplacePurchaseEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onMarketplacePurchase(uri, whPayload, event)
+			s.eventHandlers.onMarketplacePurchase(uri, event)
 		}
-	case eventtype.Member:
+	case *github.MemberEvent:
 		if s.eventHandlers.onMember != nil {
-			event := &github.MemberEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onMember(uri, whPayload, event)
+			s.eventHandlers.onMember(uri, event)
 		}
-	case eventtype.Membership:
+	case *github.MembershipEvent:
 		if s.eventHandlers.onMembership != nil {
-			event := &github.MembershipEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onMembership(uri, whPayload, event)
+			s.eventHandlers.onMembership(uri, event)
 		}
-	case eventtype.Milestone:
+	case *github.MetaEvent:
+		if s.eventHandlers.onMeta != nil {
+			s.eventHandlers.onMeta(uri, event)
+		}
+	case *github.MilestoneEvent:
 		if s.eventHandlers.onMilestone != nil {
-			event := &github.MilestoneEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onMilestone(uri, whPayload, event)
+			s.eventHandlers.onMilestone(uri, event)
 		}
-	case eventtype.Organization:
+	case *github.OrganizationEvent:
 		if s.eventHandlers.onOrganization != nil {
-			event := &github.OrganizationEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onOrganization(uri, whPayload, event)
+			s.eventHandlers.onOrganization(uri, event)
 		}
-	case eventtype.OrgBlock:
+	case *github.OrgBlockEvent:
 		if s.eventHandlers.onOrgBlock != nil {
-			event := &github.OrgBlockEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onOrgBlock(uri, whPayload, event)
+			s.eventHandlers.onOrgBlock(uri, event)
 		}
-	case eventtype.PageBuild:
+	case *github.PackageEvent:
+		if s.eventHandlers.onPackage != nil {
+			s.eventHandlers.onPackage(uri, event)
+		}
+	case *github.PageBuildEvent:
 		if s.eventHandlers.onPageBuild != nil {
-			event := &github.PageBuildEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onPageBuild(uri, whPayload, event)
+			s.eventHandlers.onPageBuild(uri, event)
 		}
-	case eventtype.ProjectCard:
-		if s.eventHandlers.onProjectCard != nil {
-			event := &github.ProjectCardEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onProjectCard(uri, whPayload, event)
+	case *github.PingEvent:
+		if s.eventHandlers.onPing != nil {
+			s.eventHandlers.onPing(uri, event)
 		}
-	case eventtype.ProjectColumn:
-		if s.eventHandlers.onProjectColumn != nil {
-			event := &github.ProjectColumnEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onProjectColumn(uri, whPayload, event)
-		}
-	case eventtype.Project:
+	case *github.ProjectEvent:
 		if s.eventHandlers.onProject != nil {
-			event := &github.ProjectEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onProject(uri, whPayload, event)
+			s.eventHandlers.onProject(uri, event)
 		}
-	case eventtype.Public:
+	case *github.ProjectCardEvent:
+		if s.eventHandlers.onProjectCard != nil {
+			s.eventHandlers.onProjectCard(uri, event)
+		}
+	case *github.ProjectColumnEvent:
+		if s.eventHandlers.onProjectColumn != nil {
+			s.eventHandlers.onProjectColumn(uri, event)
+		}
+	case *github.PublicEvent:
 		if s.eventHandlers.onPublic != nil {
-			event := &github.PublicEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onPublic(uri, whPayload, event)
+			s.eventHandlers.onPublic(uri, event)
 		}
-	case eventtype.PullRequest:
+	case *github.PullRequestEvent:
 		if s.eventHandlers.onPullRequest != nil {
-			event := &github.PullRequestEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onPullRequest(uri, whPayload, event)
+			s.eventHandlers.onPullRequest(uri, event)
 		}
-	case eventtype.PullRequestReview:
+	case *github.PullRequestReviewEvent:
 		if s.eventHandlers.onPullRequestReview != nil {
-			event := &github.PullRequestReviewEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onPullRequestReview(uri, whPayload, event)
+			s.eventHandlers.onPullRequestReview(uri, event)
 		}
-	case eventtype.PullRequestReviewComment:
+	case *github.PullRequestReviewCommentEvent:
 		if s.eventHandlers.onPullRequestReviewComment != nil {
-			event := &github.PullRequestReviewCommentEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onPullRequestReviewComment(uri, whPayload, event)
+			s.eventHandlers.onPullRequestReviewComment(uri, event)
 		}
-	case eventtype.Push:
+	case *github.PullRequestTargetEvent:
+		if s.eventHandlers.onPullRequestTarget != nil {
+			s.eventHandlers.onPullRequestTarget(uri, event)
+		}
+	case *github.PushEvent:
 		if s.eventHandlers.onPush != nil {
-			event := &github.PushEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onPush(uri, whPayload, event)
+			s.eventHandlers.onPush(uri, event)
 		}
-	case eventtype.Release:
+	case *github.ReleaseEvent:
 		if s.eventHandlers.onRelease != nil {
-			event := &github.ReleaseEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onRelease(uri, whPayload, event)
+			s.eventHandlers.onRelease(uri, event)
 		}
-	case eventtype.Repository:
+	case *github.RepositoryEvent:
 		if s.eventHandlers.onRepository != nil {
-			event := &github.RepositoryEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onRepository(uri, whPayload, event)
+			s.eventHandlers.onRepository(uri, event)
 		}
-	case eventtype.RepositoryImport:
-		if s.eventHandlers.onRepositoryImport != nil {
-			event := &RepositoryImportEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onRepositoryImport(uri, whPayload, event)
+	case *github.RepositoryDispatchEvent:
+		if s.eventHandlers.onRepositoryDispatch != nil {
+			s.eventHandlers.onRepositoryDispatch(uri, event)
 		}
-	case eventtype.RepositoryVulnerabilityAlert:
+	case *github.RepositoryVulnerabilityAlertEvent:
 		if s.eventHandlers.onRepositoryVulnerabilityAlert != nil {
-			event := &github.RepositoryVulnerabilityAlertEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onRepositoryVulnerabilityAlert(uri, whPayload, event)
+			s.eventHandlers.onRepositoryVulnerabilityAlert(uri, event)
 		}
-	case eventtype.SecurityAdvisory:
+	case *github.SecurityAdvisoryEvent:
 		if s.eventHandlers.onSecurityAdvisory != nil {
-			event := &SecurityAdvisoryEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onSecurityAdvisory(uri, whPayload, event)
+			s.eventHandlers.onSecurityAdvisory(uri, event)
 		}
-	case eventtype.Status:
+	case *github.StarEvent:
+		if s.eventHandlers.onStar != nil {
+			s.eventHandlers.onStar(uri, event)
+		}
+	case *github.StatusEvent:
 		if s.eventHandlers.onStatus != nil {
-			event := &github.StatusEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onStatus(uri, whPayload, event)
+			s.eventHandlers.onStatus(uri, event)
 		}
-	case eventtype.Team:
+	case *github.TeamEvent:
 		if s.eventHandlers.onTeam != nil {
-			event := &github.TeamEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onTeam(uri, whPayload, event)
+			s.eventHandlers.onTeam(uri, event)
 		}
-	case eventtype.TeamAdd:
+	case *github.TeamAddEvent:
 		if s.eventHandlers.onTeamAdd != nil {
-			event := &github.TeamAddEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onTeamAdd(uri, whPayload, event)
+			s.eventHandlers.onTeamAdd(uri, event)
 		}
-	case eventtype.Watch:
+	case *github.UserEvent:
+		if s.eventHandlers.onUser != nil {
+			s.eventHandlers.onUser(uri, event)
+		}
+	case *github.WatchEvent:
 		if s.eventHandlers.onWatch != nil {
-			event := &github.WatchEvent{}
-			err := json.Unmarshal(body, event)
-			if err != nil {
-				return err
-			}
-			s.eventHandlers.onWatch(uri, whPayload, event)
+			s.eventHandlers.onWatch(uri, event)
+		}
+	case *github.WorkflowDispatchEvent:
+		if s.eventHandlers.onWorkflowDispatch != nil {
+			s.eventHandlers.onWorkflowDispatch(uri, event)
+		}
+	case *github.WorkflowJobEvent:
+		if s.eventHandlers.onWorkflowJob != nil {
+			s.eventHandlers.onWorkflowJob(uri, event)
+		}
+	case *github.WorkflowRunEvent:
+		if s.eventHandlers.onWorkflowRun != nil {
+			s.eventHandlers.onWorkflowRun(uri, event)
 		}
 	default:
-		log.Printf("Unknow event type: %s", eventType)
+		return fmt.Errorf("unknow event type: %T", rawEvent)
 	}
 
 	return nil
-}
-
-func parseWebHookPayload(body []byte) (*github.WebHookPayload, error) {
-	whPayload := &github.WebHookPayload{}
-
-	err := json.Unmarshal(body, whPayload)
-	if err != nil {
-		return nil, err
-	}
-
-	return whPayload, nil
 }

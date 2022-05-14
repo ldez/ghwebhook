@@ -10,8 +10,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/google/go-github/v42/github"
-	"github.com/ldez/ghwebhook/v2/eventtype"
+	"github.com/google/go-github/v44/github"
+	"github.com/ldez/ghwebhook/v3/eventtype"
 )
 
 const FixturesDir = "./test-fixtures"
@@ -82,18 +82,7 @@ func TestServeHTTP(t *testing.T) {
 			headers: map[string]string{
 				"X-Github-Event": eventtype.Push,
 			},
-			expectedCode: http.StatusInternalServerError,
-		},
-		{
-			name:   "secured: missing X-Hub-Signature header",
-			method: http.MethodPost,
-			path:   defaultPath,
-			secret: "foo",
-			body:   bytes.NewBufferString("{}"),
-			headers: map[string]string{
-				"X-Github-Event": eventtype.Push,
-			},
-			expectedCode: http.StatusForbidden,
+			expectedCode: http.StatusBadRequest,
 		},
 		{
 			name:   "secured: invalid signature",
@@ -112,7 +101,7 @@ func TestServeHTTP(t *testing.T) {
 	for _, test := range testCases {
 		test := test
 		t.Run(test.name, func(t *testing.T) {
-			t.Parallel()
+			// t.Parallel()
 
 			webHook := NewWebHook(eventHandlers, WithSecret(test.secret))
 
@@ -120,6 +109,8 @@ func TestServeHTTP(t *testing.T) {
 			for key, value := range test.headers {
 				req.Header.Add(key, value)
 			}
+
+			req.Header.Set("Content-Type", "application/json")
 
 			resp := httptest.NewRecorder()
 
@@ -138,27 +129,18 @@ func Test_handleEvents(t *testing.T) {
 
 	testCases := []struct {
 		name          string
-		eventType     string
-		body          []byte
+		event         interface{}
 		expectedError bool
 	}{
 		{
-			name:          "empty body",
-			eventType:     eventtype.Push,
-			body:          []byte(""),
-			expectedError: true,
-		},
-		{
-			name:          "invalid JSON body",
-			eventType:     eventtype.Push,
-			body:          []byte("{"),
-			expectedError: true,
-		},
-		{
-			name:          "valid JSON body",
-			eventType:     eventtype.Push,
-			body:          []byte("{}"),
+			name:          "valid event type",
+			event:         &github.PushEvent{},
 			expectedError: false,
+		},
+		{
+			name:          "invalid event type",
+			event:         &struct{}{},
+			expectedError: true,
 		},
 	}
 
@@ -167,7 +149,7 @@ func Test_handleEvents(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
 
-			err := webHook.handleEvents(nil, test.eventType, test.body)
+			err := webHook.handleEvents(nil, test.event)
 
 			if test.expectedError && err == nil {
 				t.Errorf("Got no error, but want an error.")
@@ -191,7 +173,7 @@ func Test_handleEvents_payload(t *testing.T) {
 			eventType:   eventtype.Issues,
 			fixtureFile: "gh-issue_opened.json",
 			eventHandlers: NewEventHandlers().
-				OnIssues(func(uri *url.URL, payload *github.WebHookPayload, event *github.IssuesEvent) {
+				OnIssues(func(uri *url.URL, event *github.IssuesEvent) {
 					assertEventAction(t, event, "opened")
 				}),
 			expectedHandler: func(t *testing.T, eh *EventHandlers) {
@@ -207,7 +189,7 @@ func Test_handleEvents_payload(t *testing.T) {
 			eventType:   eventtype.PullRequest,
 			fixtureFile: "gh-pr_opened.json",
 			eventHandlers: NewEventHandlers().
-				OnPullRequest(func(uri *url.URL, payload *github.WebHookPayload, event *github.PullRequestEvent) {
+				OnPullRequest(func(uri *url.URL, event *github.PullRequestEvent) {
 					assertEventAction(t, event, "opened")
 				}),
 			expectedHandler: func(t *testing.T, eh *EventHandlers) {
@@ -223,7 +205,7 @@ func Test_handleEvents_payload(t *testing.T) {
 			eventType:   eventtype.Ping,
 			fixtureFile: "gh-ping.json",
 			eventHandlers: NewEventHandlers().
-				OnPing(func(uri *url.URL, payload *github.WebHookPayload, event *github.PingEvent) {
+				OnPing(func(uri *url.URL, event *github.PingEvent) {
 					if event == nil {
 						t.Fatal("Got nil, want an event.")
 					}
@@ -249,7 +231,12 @@ func Test_handleEvents_payload(t *testing.T) {
 			t.Parallel()
 
 			webHook := NewWebHook(test.eventHandlers)
-			err := webHook.handleEvents(nil, test.eventType, mustReadFixtureFile(test.fixtureFile))
+			event, err := github.ParseWebHook(test.eventType, mustReadFixtureFile(test.fixtureFile))
+			if err != nil {
+				t.Errorf("Got %v, but want no error.", err)
+			}
+
+			err = webHook.handleEvents(nil, event)
 			if err != nil {
 				t.Errorf("Got %v, but want no error.", err)
 			}
