@@ -3,7 +3,7 @@ package ghwebhook
 import (
 	"regexp"
 
-	"github.com/ldez/ghwebhook/v3/eventtype"
+	"github.com/ldez/ghwebhook/v4/eventtype"
 )
 
 type serverOption func(*WebHook)

@@ -2,7 +2,7 @@
 
 [![release](https://img.shields.io/github/tag/ldez/ghwebhook.svg)](https://github.com/ldez/ghwebhook/releases)
 [![Build Status](https://github.com/ldez/ghwebhook/workflows/Main/badge.svg?branch=master)](https://github.com/ldez/ghwebhook/actions)
-[![PkgGoDev](https://pkg.go.dev/badge/github.com/ldez/ghwebhook)](https://pkg.go.dev/github.com/ldez/ghwebhook/v3)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/ldez/ghwebhook)](https://pkg.go.dev/github.com/ldez/ghwebhook/v4)
 
 [![Sponsor](https://img.shields.io/badge/Sponsor%20me-%E2%9D%A4%EF%B8%8F-pink)](https://github.com/sponsors/ldez)
 
@@ -25,7 +25,7 @@ import (
 	"net/url"
 
 	"github.com/google/go-github/v44/github"
-	ghw "github.com/ldez/ghwebhook/v3"
+	ghw "github.com/ldez/ghwebhook/v4"
 )
 
 func main() {
@@ -58,8 +58,8 @@ import (
 	"net/url"
 
 	"github.com/google/go-github/v44/github"
-	ghw "github.com/ldez/ghwebhook/v3"
-	"github.com/ldez/ghwebhook/v3/eventtype"
+	ghw "github.com/ldez/ghwebhook/v4"
+	"github.com/ldez/ghwebhook/v4/eventtype"
 )
 
 func main() {

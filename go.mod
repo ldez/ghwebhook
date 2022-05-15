@@ -1,4 +1,4 @@
-module github.com/ldez/ghwebhook/v3
+module github.com/ldez/ghwebhook/v4
 
 go 1.17
 
