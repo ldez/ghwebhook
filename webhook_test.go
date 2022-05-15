@@ -149,7 +149,7 @@ func Test_handleEvents(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
 
-			err := webHook.handleEvents(nil, test.event)
+			err := webHook.handleEvents(nil, "", test.event)
 
 			if test.expectedError && err == nil {
 				t.Errorf("Got no error, but want an error.")
@@ -173,13 +173,13 @@ func Test_handleEvents_payload(t *testing.T) {
 			eventType:   eventtype.Issues,
 			fixtureFile: "gh-issue_opened.json",
 			eventHandlers: NewEventHandlers().
-				OnIssues(func(uri *url.URL, event *github.IssuesEvent) {
+				OnIssuesEvent(func(uri *url.URL, deliveryID string, event *github.IssuesEvent) {
 					assertEventAction(t, event, "opened")
 				}),
 			expectedHandler: func(t *testing.T, eh *EventHandlers) {
 				t.Helper()
 
-				if eh.onIssues == nil {
+				if eh.onIssuesEvent == nil {
 					t.Error("Got nil, want onIssues function")
 				}
 			},
@@ -189,13 +189,13 @@ func Test_handleEvents_payload(t *testing.T) {
 			eventType:   eventtype.PullRequest,
 			fixtureFile: "gh-pr_opened.json",
 			eventHandlers: NewEventHandlers().
-				OnPullRequest(func(uri *url.URL, event *github.PullRequestEvent) {
+				OnPullRequestEvent(func(uri *url.URL, deliveryID string, event *github.PullRequestEvent) {
 					assertEventAction(t, event, "opened")
 				}),
 			expectedHandler: func(t *testing.T, eh *EventHandlers) {
 				t.Helper()
 
-				if eh.onPullRequest == nil {
+				if eh.onPullRequestEvent == nil {
 					t.Error("Got nil, want onPullRequest function")
 				}
 			},
@@ -205,7 +205,7 @@ func Test_handleEvents_payload(t *testing.T) {
 			eventType:   eventtype.Ping,
 			fixtureFile: "gh-ping.json",
 			eventHandlers: NewEventHandlers().
-				OnPing(func(uri *url.URL, event *github.PingEvent) {
+				OnPingEvent(func(uri *url.URL, deliveryID string, event *github.PingEvent) {
 					if event == nil {
 						t.Fatal("Got nil, want an event.")
 					}
@@ -218,7 +218,7 @@ func Test_handleEvents_payload(t *testing.T) {
 			expectedHandler: func(t *testing.T, eh *EventHandlers) {
 				t.Helper()
 
-				if eh.onPing == nil {
+				if eh.onPingEvent == nil {
 					t.Error("Got nil, want onPing function")
 				}
 			},
@@ -236,7 +236,7 @@ func Test_handleEvents_payload(t *testing.T) {
 				t.Errorf("Got %v, but want no error.", err)
 			}
 
-			err = webHook.handleEvents(nil, event)
+			err = webHook.handleEvents(nil, "", event)
 			if err != nil {
 				t.Errorf("Got %v, but want no error.", err)
 			}

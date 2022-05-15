@@ -30,13 +30,13 @@ import (
 
 func main() {
 	eventHandlers := ghw.NewEventHandlers().
-		OnIssues(func(uri *url.URL, event *github.IssuesEvent) {
+		OnIssuesEvent(func(uri *url.URL, deliveryID string, event *github.IssuesEvent) {
 			go func() {
-				log.Println(uri, event.GetAction(), event.Issue)
+				log.Println(uri, deliveryID, event.GetAction(), event.Issue)
 			}()
 		}).
-		OnPullRequest(func(uri *url.URL, event *github.PullRequestEvent) {
-			log.Println(uri, event.GetAction(), event.GetNumber(), event.PullRequest)
+		OnPullRequestEvent(func(uri *url.URL, deliveryID string, event *github.PullRequestEvent) {
+			log.Println(uri, deliveryID, event.GetAction(), event.GetNumber(), event.PullRequest)
 		})
 
 	webHook := ghw.NewWebHook(eventHandlers, ghw.WithAllEventTypes)
@@ -64,13 +64,13 @@ import (
 
 func main() {
 	eventHandlers := ghw.NewEventHandlers().
-		OnIssues(func(uri *url.URL, event *github.IssuesEvent) {
+		OnIssuesEvent(func(uri *url.URL, deliveryID string, event *github.IssuesEvent) {
 			go func() {
-				log.Println(uri, event.GetAction(), event.Issue)
+				log.Println(uri, deliveryID, event.GetAction(), event.Issue)
 			}()
 		}).
-		OnPullRequest(func(uri *url.URL, event *github.PullRequestEvent) {
-			log.Println(uri, event.GetAction(), event.GetNumber(), event.PullRequest)
+		OnPullRequestEvent(func(uri *url.URL, deliveryID string, event *github.PullRequestEvent) {
+			log.Println(uri, deliveryID, event.GetAction(), event.GetNumber(), event.PullRequest)
 		})
 
 	webhook := ghw.NewWebHook(

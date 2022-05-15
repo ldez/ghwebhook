@@ -1,9 +1,12 @@
-.PHONY: clean check test-unit build
+.PHONY: clean generate check test-unit build
 
-default: clean check test-unit build
+default: clean generate check test-unit build
 
 clean:
 	rm -f cover.out
+
+generate:
+	go generate
 
 build:
 	go build

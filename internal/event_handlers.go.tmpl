@@ -1,0 +1,30 @@
+package ghwebhook
+
+// CODE GENERATED AUTOMATICALLY
+// THIS FILE MUST NOT BE EDITED BY HAND
+
+import (
+	"net/url"
+
+	"github.com/google/go-github/v44/github"
+)
+
+// EventHandlers all event handlers.
+type EventHandlers struct {
+{{range .Events}}
+on{{.}} func(uri *url.URL, deliveryID string, event *github.{{.}})
+{{- end}}
+}
+
+// NewEventHandlers create a new event handlers.
+func NewEventHandlers() *EventHandlers {
+	return &EventHandlers{}
+}
+
+{{range .Events}}
+// On{{.}} {{.}} handler.
+func (c *EventHandlers) On{{.}}(eventHandler func(uri *url.URL, deliveryID string, event *github.{{.}})) *EventHandlers {
+	c.on{{.}} = eventHandler
+	return c
+}
+{{end}}
