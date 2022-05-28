@@ -177,6 +177,10 @@ func (s *WebHook) handleEvents(uri *url.URL, deliveryID string, rawEvent interfa
 		if s.eventHandlers.onRepositoryDispatchEvent != nil {
 			s.eventHandlers.onRepositoryDispatchEvent(uri, deliveryID, event)
 		}
+	case *github.RepositoryImportEvent:
+		if s.eventHandlers.onRepositoryImportEvent != nil {
+			s.eventHandlers.onRepositoryImportEvent(uri, deliveryID, event)
+		}
 	case *github.RepositoryVulnerabilityAlertEvent:
 		if s.eventHandlers.onRepositoryVulnerabilityAlertEvent != nil {
 			s.eventHandlers.onRepositoryVulnerabilityAlertEvent(uri, deliveryID, event)

@@ -45,7 +45,7 @@ const (
 	Release                      = "release"
 	Repository                   = "repository"
 	RepositoryDispatch           = "repository_dispatch"
-	RepositoryImport             = "repository_import" // TODO not yet supported by go-github
+	RepositoryImport             = "repository_import"
 	RepositoryVulnerabilityAlert = "repository_vulnerability_alert"
 	SecurityAdvisory             = "security_advisory"
 	Sponsorship                  = "sponsorship"

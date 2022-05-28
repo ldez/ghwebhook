@@ -54,6 +54,7 @@ func main() {
 			"PushEvent",
 			"RepositoryEvent",
 			"RepositoryDispatchEvent",
+			"RepositoryImportEvent",
 			"RepositoryVulnerabilityAlertEvent",
 			"ReleaseEvent",
 			"SecretScanningAlertEvent",

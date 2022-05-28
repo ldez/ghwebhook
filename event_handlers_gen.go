@@ -52,6 +52,7 @@ type EventHandlers struct {
 	onPushEvent                         func(uri *url.URL, deliveryID string, event *github.PushEvent)
 	onRepositoryEvent                   func(uri *url.URL, deliveryID string, event *github.RepositoryEvent)
 	onRepositoryDispatchEvent           func(uri *url.URL, deliveryID string, event *github.RepositoryDispatchEvent)
+	onRepositoryImportEvent             func(uri *url.URL, deliveryID string, event *github.RepositoryImportEvent)
 	onRepositoryVulnerabilityAlertEvent func(uri *url.URL, deliveryID string, event *github.RepositoryVulnerabilityAlertEvent)
 	onReleaseEvent                      func(uri *url.URL, deliveryID string, event *github.ReleaseEvent)
 	onSecretScanningAlertEvent          func(uri *url.URL, deliveryID string, event *github.SecretScanningAlertEvent)
@@ -314,6 +315,12 @@ func (c *EventHandlers) OnRepositoryEvent(eventHandler func(uri *url.URL, delive
 // OnRepositoryDispatchEvent RepositoryDispatchEvent handler.
 func (c *EventHandlers) OnRepositoryDispatchEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.RepositoryDispatchEvent)) *EventHandlers {
 	c.onRepositoryDispatchEvent = eventHandler
+	return c
+}
+
+// OnRepositoryImportEvent RepositoryImportEvent handler.
+func (c *EventHandlers) OnRepositoryImportEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.RepositoryImportEvent)) *EventHandlers {
+	c.onRepositoryImportEvent = eventHandler
 	return c
 }
 
