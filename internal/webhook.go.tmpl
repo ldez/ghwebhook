@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/google/go-github/v44/github"
+	"github.com/google/go-github/v45/github"
 )
 
 func (s *WebHook) handleEvents(uri *url.URL, deliveryID string, rawEvent interface{}) error {
