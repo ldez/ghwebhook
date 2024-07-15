@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/google/go-github/v47/github"
+	"github.com/google/go-github/v62/github"
 	"github.com/ldez/ghwebhook/v4/eventtype"
 )
 
@@ -173,7 +173,7 @@ func Test_handleEvents_payload(t *testing.T) {
 			eventType:   eventtype.Issues,
 			fixtureFile: "gh-issue_opened.json",
 			eventHandlers: NewEventHandlers().
-				OnIssuesEvent(func(uri *url.URL, deliveryID string, event *github.IssuesEvent) {
+				OnIssuesEvent(func(_ *url.URL, _ string, event *github.IssuesEvent) {
 					assertEventAction(t, event, "opened")
 				}),
 			expectedHandler: func(t *testing.T, eh *EventHandlers) {
@@ -189,7 +189,7 @@ func Test_handleEvents_payload(t *testing.T) {
 			eventType:   eventtype.PullRequest,
 			fixtureFile: "gh-pr_opened.json",
 			eventHandlers: NewEventHandlers().
-				OnPullRequestEvent(func(uri *url.URL, deliveryID string, event *github.PullRequestEvent) {
+				OnPullRequestEvent(func(_ *url.URL, _ string, event *github.PullRequestEvent) {
 					assertEventAction(t, event, "opened")
 				}),
 			expectedHandler: func(t *testing.T, eh *EventHandlers) {
@@ -205,7 +205,7 @@ func Test_handleEvents_payload(t *testing.T) {
 			eventType:   eventtype.Ping,
 			fixtureFile: "gh-ping.json",
 			eventHandlers: NewEventHandlers().
-				OnPingEvent(func(uri *url.URL, deliveryID string, event *github.PingEvent) {
+				OnPingEvent(func(_ *url.URL, _ string, event *github.PingEvent) {
 					if event == nil {
 						t.Fatal("Got nil, want an event.")
 					}

@@ -6,7 +6,7 @@
 
 [![Sponsor](https://img.shields.io/badge/Sponsor%20me-%E2%9D%A4%EF%B8%8F-pink)](https://github.com/sponsors/ldez)
 
-Create a Github WebHook in 5 seconds!
+Create a GitHub WebHook in 5 seconds!
 
 ## Description
 
@@ -24,7 +24,7 @@ import (
 	"log"
 	"net/url"
 
-	"github.com/google/go-github/v47/github"
+	"github.com/google/go-github/v62/github"
 	ghw "github.com/ldez/ghwebhook/v4"
 )
 
@@ -57,7 +57,7 @@ import (
 	"log"
 	"net/url"
 
-	"github.com/google/go-github/v47/github"
+	"github.com/google/go-github/v62/github"
 	ghw "github.com/ldez/ghwebhook/v4"
 	"github.com/ldez/ghwebhook/v4/eventtype"
 )
