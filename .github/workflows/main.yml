@@ -3,7 +3,6 @@ name: Main
 on:
   push:
     branches:
-      - master
       - main
   pull_request:
 
@@ -14,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GO_VERSION: stable
-      GOLANGCI_LINT_VERSION: v1.59.1
+      GOLANGCI_LINT_VERSION: v1.63.4
       CGO_ENABLED: 0
 
     steps:
