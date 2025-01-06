@@ -6,70 +6,91 @@ package ghwebhook
 import (
 	"net/url"
 
-	"github.com/google/go-github/v62/github"
+	"github.com/google/go-github/v68/github"
 )
 
 // EventHandlers all event handlers.
 type EventHandlers struct {
-	onBranchProtectionRuleEvent         func(uri *url.URL, deliveryID string, event *github.BranchProtectionRuleEvent)
-	onCheckRunEvent                     func(uri *url.URL, deliveryID string, event *github.CheckRunEvent)
-	onCheckSuiteEvent                   func(uri *url.URL, deliveryID string, event *github.CheckSuiteEvent)
-	onCommitCommentEvent                func(uri *url.URL, deliveryID string, event *github.CommitCommentEvent)
-	onContentReferenceEvent             func(uri *url.URL, deliveryID string, event *github.ContentReferenceEvent)
-	onCreateEvent                       func(uri *url.URL, deliveryID string, event *github.CreateEvent)
-	onDeleteEvent                       func(uri *url.URL, deliveryID string, event *github.DeleteEvent)
-	onDeployKeyEvent                    func(uri *url.URL, deliveryID string, event *github.DeployKeyEvent)
-	onDeploymentEvent                   func(uri *url.URL, deliveryID string, event *github.DeploymentEvent)
-	onDeploymentStatusEvent             func(uri *url.URL, deliveryID string, event *github.DeploymentStatusEvent)
-	onDiscussionEvent                   func(uri *url.URL, deliveryID string, event *github.DiscussionEvent)
-	onForkEvent                         func(uri *url.URL, deliveryID string, event *github.ForkEvent)
-	onGitHubAppAuthorizationEvent       func(uri *url.URL, deliveryID string, event *github.GitHubAppAuthorizationEvent)
-	onGollumEvent                       func(uri *url.URL, deliveryID string, event *github.GollumEvent)
-	onInstallationEvent                 func(uri *url.URL, deliveryID string, event *github.InstallationEvent)
-	onInstallationRepositoriesEvent     func(uri *url.URL, deliveryID string, event *github.InstallationRepositoriesEvent)
-	onIssueCommentEvent                 func(uri *url.URL, deliveryID string, event *github.IssueCommentEvent)
-	onIssuesEvent                       func(uri *url.URL, deliveryID string, event *github.IssuesEvent)
-	onLabelEvent                        func(uri *url.URL, deliveryID string, event *github.LabelEvent)
-	onMarketplacePurchaseEvent          func(uri *url.URL, deliveryID string, event *github.MarketplacePurchaseEvent)
-	onMemberEvent                       func(uri *url.URL, deliveryID string, event *github.MemberEvent)
-	onMembershipEvent                   func(uri *url.URL, deliveryID string, event *github.MembershipEvent)
-	onMetaEvent                         func(uri *url.URL, deliveryID string, event *github.MetaEvent)
-	onMilestoneEvent                    func(uri *url.URL, deliveryID string, event *github.MilestoneEvent)
-	onOrganizationEvent                 func(uri *url.URL, deliveryID string, event *github.OrganizationEvent)
-	onOrgBlockEvent                     func(uri *url.URL, deliveryID string, event *github.OrgBlockEvent)
-	onPackageEvent                      func(uri *url.URL, deliveryID string, event *github.PackageEvent)
-	onPageBuildEvent                    func(uri *url.URL, deliveryID string, event *github.PageBuildEvent)
-	onPingEvent                         func(uri *url.URL, deliveryID string, event *github.PingEvent)
-	onProjectEvent                      func(uri *url.URL, deliveryID string, event *github.ProjectEvent)
-	onProjectCardEvent                  func(uri *url.URL, deliveryID string, event *github.ProjectCardEvent)
-	onProjectColumnEvent                func(uri *url.URL, deliveryID string, event *github.ProjectColumnEvent)
-	onPublicEvent                       func(uri *url.URL, deliveryID string, event *github.PublicEvent)
-	onPullRequestEvent                  func(uri *url.URL, deliveryID string, event *github.PullRequestEvent)
-	onPullRequestReviewEvent            func(uri *url.URL, deliveryID string, event *github.PullRequestReviewEvent)
-	onPullRequestReviewCommentEvent     func(uri *url.URL, deliveryID string, event *github.PullRequestReviewCommentEvent)
-	onPullRequestReviewThreadEvent      func(uri *url.URL, deliveryID string, event *github.PullRequestReviewThreadEvent)
-	onPullRequestTargetEvent            func(uri *url.URL, deliveryID string, event *github.PullRequestTargetEvent)
-	onPushEvent                         func(uri *url.URL, deliveryID string, event *github.PushEvent)
-	onRepositoryEvent                   func(uri *url.URL, deliveryID string, event *github.RepositoryEvent)
-	onRepositoryDispatchEvent           func(uri *url.URL, deliveryID string, event *github.RepositoryDispatchEvent)
-	onRepositoryImportEvent             func(uri *url.URL, deliveryID string, event *github.RepositoryImportEvent)
-	onRepositoryVulnerabilityAlertEvent func(uri *url.URL, deliveryID string, event *github.RepositoryVulnerabilityAlertEvent)
-	onReleaseEvent                      func(uri *url.URL, deliveryID string, event *github.ReleaseEvent)
-	onSecretScanningAlertEvent          func(uri *url.URL, deliveryID string, event *github.SecretScanningAlertEvent)
-	onStarEvent                         func(uri *url.URL, deliveryID string, event *github.StarEvent)
-	onStatusEvent                       func(uri *url.URL, deliveryID string, event *github.StatusEvent)
-	onTeamEvent                         func(uri *url.URL, deliveryID string, event *github.TeamEvent)
-	onTeamAddEvent                      func(uri *url.URL, deliveryID string, event *github.TeamAddEvent)
-	onUserEvent                         func(uri *url.URL, deliveryID string, event *github.UserEvent)
-	onWatchEvent                        func(uri *url.URL, deliveryID string, event *github.WatchEvent)
-	onWorkflowDispatchEvent             func(uri *url.URL, deliveryID string, event *github.WorkflowDispatchEvent)
-	onWorkflowJobEvent                  func(uri *url.URL, deliveryID string, event *github.WorkflowJobEvent)
-	onWorkflowRunEvent                  func(uri *url.URL, deliveryID string, event *github.WorkflowRunEvent)
+	onBranchProtectionConfigurationEvent func(uri *url.URL, deliveryID string, event *github.BranchProtectionConfigurationEvent)
+	onBranchProtectionRuleEvent          func(uri *url.URL, deliveryID string, event *github.BranchProtectionRuleEvent)
+	onCheckRunEvent                      func(uri *url.URL, deliveryID string, event *github.CheckRunEvent)
+	onCheckSuiteEvent                    func(uri *url.URL, deliveryID string, event *github.CheckSuiteEvent)
+	onCodeScanningAlertEvent             func(uri *url.URL, deliveryID string, event *github.CodeScanningAlertEvent)
+	onCommitCommentEvent                 func(uri *url.URL, deliveryID string, event *github.CommitCommentEvent)
+	onContentReferenceEvent              func(uri *url.URL, deliveryID string, event *github.ContentReferenceEvent)
+	onCreateEvent                        func(uri *url.URL, deliveryID string, event *github.CreateEvent)
+	onCustomPropertyEvent                func(uri *url.URL, deliveryID string, event *github.CustomPropertyEvent)
+	onCustomPropertyValuesEvent          func(uri *url.URL, deliveryID string, event *github.CustomPropertyValuesEvent)
+	onDeleteEvent                        func(uri *url.URL, deliveryID string, event *github.DeleteEvent)
+	onDependabotAlertEvent               func(uri *url.URL, deliveryID string, event *github.DependabotAlertEvent)
+	onDeployKeyEvent                     func(uri *url.URL, deliveryID string, event *github.DeployKeyEvent)
+	onDeploymentEvent                    func(uri *url.URL, deliveryID string, event *github.DeploymentEvent)
+	onDeploymentReviewEvent              func(uri *url.URL, deliveryID string, event *github.DeploymentReviewEvent)
+	onDeploymentStatusEvent              func(uri *url.URL, deliveryID string, event *github.DeploymentStatusEvent)
+	onDeploymentProtectionRuleEvent      func(uri *url.URL, deliveryID string, event *github.DeploymentProtectionRuleEvent)
+	onDiscussionEvent                    func(uri *url.URL, deliveryID string, event *github.DiscussionEvent)
+	onDiscussionCommentEvent             func(uri *url.URL, deliveryID string, event *github.DiscussionCommentEvent)
+	onForkEvent                          func(uri *url.URL, deliveryID string, event *github.ForkEvent)
+	onGitHubAppAuthorizationEvent        func(uri *url.URL, deliveryID string, event *github.GitHubAppAuthorizationEvent)
+	onGollumEvent                        func(uri *url.URL, deliveryID string, event *github.GollumEvent)
+	onInstallationEvent                  func(uri *url.URL, deliveryID string, event *github.InstallationEvent)
+	onInstallationRepositoriesEvent      func(uri *url.URL, deliveryID string, event *github.InstallationRepositoriesEvent)
+	onInstallationTargetEvent            func(uri *url.URL, deliveryID string, event *github.InstallationTargetEvent)
+	onIssueCommentEvent                  func(uri *url.URL, deliveryID string, event *github.IssueCommentEvent)
+	onIssuesEvent                        func(uri *url.URL, deliveryID string, event *github.IssuesEvent)
+	onLabelEvent                         func(uri *url.URL, deliveryID string, event *github.LabelEvent)
+	onMarketplacePurchaseEvent           func(uri *url.URL, deliveryID string, event *github.MarketplacePurchaseEvent)
+	onMemberEvent                        func(uri *url.URL, deliveryID string, event *github.MemberEvent)
+	onMembershipEvent                    func(uri *url.URL, deliveryID string, event *github.MembershipEvent)
+	onMergeGroupEvent                    func(uri *url.URL, deliveryID string, event *github.MergeGroupEvent)
+	onMetaEvent                          func(uri *url.URL, deliveryID string, event *github.MetaEvent)
+	onMilestoneEvent                     func(uri *url.URL, deliveryID string, event *github.MilestoneEvent)
+	onOrganizationEvent                  func(uri *url.URL, deliveryID string, event *github.OrganizationEvent)
+	onOrgBlockEvent                      func(uri *url.URL, deliveryID string, event *github.OrgBlockEvent)
+	onPackageEvent                       func(uri *url.URL, deliveryID string, event *github.PackageEvent)
+	onPageBuildEvent                     func(uri *url.URL, deliveryID string, event *github.PageBuildEvent)
+	onPersonalAccessTokenRequestEvent    func(uri *url.URL, deliveryID string, event *github.PersonalAccessTokenRequestEvent)
+	onPingEvent                          func(uri *url.URL, deliveryID string, event *github.PingEvent)
+	onProjectV2Event                     func(uri *url.URL, deliveryID string, event *github.ProjectV2Event)
+	onProjectV2ItemEvent                 func(uri *url.URL, deliveryID string, event *github.ProjectV2ItemEvent)
+	onPublicEvent                        func(uri *url.URL, deliveryID string, event *github.PublicEvent)
+	onPullRequestEvent                   func(uri *url.URL, deliveryID string, event *github.PullRequestEvent)
+	onPullRequestReviewEvent             func(uri *url.URL, deliveryID string, event *github.PullRequestReviewEvent)
+	onPullRequestReviewCommentEvent      func(uri *url.URL, deliveryID string, event *github.PullRequestReviewCommentEvent)
+	onPullRequestReviewThreadEvent       func(uri *url.URL, deliveryID string, event *github.PullRequestReviewThreadEvent)
+	onPullRequestTargetEvent             func(uri *url.URL, deliveryID string, event *github.PullRequestTargetEvent)
+	onPushEvent                          func(uri *url.URL, deliveryID string, event *github.PushEvent)
+	onRepositoryEvent                    func(uri *url.URL, deliveryID string, event *github.RepositoryEvent)
+	onRepositoryDispatchEvent            func(uri *url.URL, deliveryID string, event *github.RepositoryDispatchEvent)
+	onRepositoryImportEvent              func(uri *url.URL, deliveryID string, event *github.RepositoryImportEvent)
+	onRepositoryRulesetEvent             func(uri *url.URL, deliveryID string, event *github.RepositoryRulesetEvent)
+	onRepositoryVulnerabilityAlertEvent  func(uri *url.URL, deliveryID string, event *github.RepositoryVulnerabilityAlertEvent)
+	onReleaseEvent                       func(uri *url.URL, deliveryID string, event *github.ReleaseEvent)
+	onSecretScanningAlertEvent           func(uri *url.URL, deliveryID string, event *github.SecretScanningAlertEvent)
+	onSecretScanningAlertLocationEvent   func(uri *url.URL, deliveryID string, event *github.SecretScanningAlertLocationEvent)
+	onSecurityAdvisoryEvent              func(uri *url.URL, deliveryID string, event *github.SecurityAdvisoryEvent)
+	onSecurityAndAnalysisEvent           func(uri *url.URL, deliveryID string, event *github.SecurityAndAnalysisEvent)
+	onSponsorshipEvent                   func(uri *url.URL, deliveryID string, event *github.SponsorshipEvent)
+	onStarEvent                          func(uri *url.URL, deliveryID string, event *github.StarEvent)
+	onStatusEvent                        func(uri *url.URL, deliveryID string, event *github.StatusEvent)
+	onTeamEvent                          func(uri *url.URL, deliveryID string, event *github.TeamEvent)
+	onTeamAddEvent                       func(uri *url.URL, deliveryID string, event *github.TeamAddEvent)
+	onUserEvent                          func(uri *url.URL, deliveryID string, event *github.UserEvent)
+	onWatchEvent                         func(uri *url.URL, deliveryID string, event *github.WatchEvent)
+	onWorkflowDispatchEvent              func(uri *url.URL, deliveryID string, event *github.WorkflowDispatchEvent)
+	onWorkflowJobEvent                   func(uri *url.URL, deliveryID string, event *github.WorkflowJobEvent)
+	onWorkflowRunEvent                   func(uri *url.URL, deliveryID string, event *github.WorkflowRunEvent)
 }
 
 // NewEventHandlers create a new event handlers.
 func NewEventHandlers() *EventHandlers {
 	return &EventHandlers{}
+}
+
+// OnBranchProtectionConfigurationEvent BranchProtectionConfigurationEvent handler.
+func (c *EventHandlers) OnBranchProtectionConfigurationEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.BranchProtectionConfigurationEvent)) *EventHandlers {
+	c.onBranchProtectionConfigurationEvent = eventHandler
+	return c
 }
 
 // OnBranchProtectionRuleEvent BranchProtectionRuleEvent handler.
@@ -87,6 +108,12 @@ func (c *EventHandlers) OnCheckRunEvent(eventHandler func(uri *url.URL, delivery
 // OnCheckSuiteEvent CheckSuiteEvent handler.
 func (c *EventHandlers) OnCheckSuiteEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.CheckSuiteEvent)) *EventHandlers {
 	c.onCheckSuiteEvent = eventHandler
+	return c
+}
+
+// OnCodeScanningAlertEvent CodeScanningAlertEvent handler.
+func (c *EventHandlers) OnCodeScanningAlertEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.CodeScanningAlertEvent)) *EventHandlers {
+	c.onCodeScanningAlertEvent = eventHandler
 	return c
 }
 
@@ -108,9 +135,27 @@ func (c *EventHandlers) OnCreateEvent(eventHandler func(uri *url.URL, deliveryID
 	return c
 }
 
+// OnCustomPropertyEvent CustomPropertyEvent handler.
+func (c *EventHandlers) OnCustomPropertyEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.CustomPropertyEvent)) *EventHandlers {
+	c.onCustomPropertyEvent = eventHandler
+	return c
+}
+
+// OnCustomPropertyValuesEvent CustomPropertyValuesEvent handler.
+func (c *EventHandlers) OnCustomPropertyValuesEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.CustomPropertyValuesEvent)) *EventHandlers {
+	c.onCustomPropertyValuesEvent = eventHandler
+	return c
+}
+
 // OnDeleteEvent DeleteEvent handler.
 func (c *EventHandlers) OnDeleteEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.DeleteEvent)) *EventHandlers {
 	c.onDeleteEvent = eventHandler
+	return c
+}
+
+// OnDependabotAlertEvent DependabotAlertEvent handler.
+func (c *EventHandlers) OnDependabotAlertEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.DependabotAlertEvent)) *EventHandlers {
+	c.onDependabotAlertEvent = eventHandler
 	return c
 }
 
@@ -126,15 +171,33 @@ func (c *EventHandlers) OnDeploymentEvent(eventHandler func(uri *url.URL, delive
 	return c
 }
 
+// OnDeploymentReviewEvent DeploymentReviewEvent handler.
+func (c *EventHandlers) OnDeploymentReviewEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.DeploymentReviewEvent)) *EventHandlers {
+	c.onDeploymentReviewEvent = eventHandler
+	return c
+}
+
 // OnDeploymentStatusEvent DeploymentStatusEvent handler.
 func (c *EventHandlers) OnDeploymentStatusEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.DeploymentStatusEvent)) *EventHandlers {
 	c.onDeploymentStatusEvent = eventHandler
 	return c
 }
 
+// OnDeploymentProtectionRuleEvent DeploymentProtectionRuleEvent handler.
+func (c *EventHandlers) OnDeploymentProtectionRuleEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.DeploymentProtectionRuleEvent)) *EventHandlers {
+	c.onDeploymentProtectionRuleEvent = eventHandler
+	return c
+}
+
 // OnDiscussionEvent DiscussionEvent handler.
 func (c *EventHandlers) OnDiscussionEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.DiscussionEvent)) *EventHandlers {
 	c.onDiscussionEvent = eventHandler
+	return c
+}
+
+// OnDiscussionCommentEvent DiscussionCommentEvent handler.
+func (c *EventHandlers) OnDiscussionCommentEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.DiscussionCommentEvent)) *EventHandlers {
+	c.onDiscussionCommentEvent = eventHandler
 	return c
 }
 
@@ -165,6 +228,12 @@ func (c *EventHandlers) OnInstallationEvent(eventHandler func(uri *url.URL, deli
 // OnInstallationRepositoriesEvent InstallationRepositoriesEvent handler.
 func (c *EventHandlers) OnInstallationRepositoriesEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.InstallationRepositoriesEvent)) *EventHandlers {
 	c.onInstallationRepositoriesEvent = eventHandler
+	return c
+}
+
+// OnInstallationTargetEvent InstallationTargetEvent handler.
+func (c *EventHandlers) OnInstallationTargetEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.InstallationTargetEvent)) *EventHandlers {
+	c.onInstallationTargetEvent = eventHandler
 	return c
 }
 
@@ -204,6 +273,12 @@ func (c *EventHandlers) OnMembershipEvent(eventHandler func(uri *url.URL, delive
 	return c
 }
 
+// OnMergeGroupEvent MergeGroupEvent handler.
+func (c *EventHandlers) OnMergeGroupEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.MergeGroupEvent)) *EventHandlers {
+	c.onMergeGroupEvent = eventHandler
+	return c
+}
+
 // OnMetaEvent MetaEvent handler.
 func (c *EventHandlers) OnMetaEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.MetaEvent)) *EventHandlers {
 	c.onMetaEvent = eventHandler
@@ -240,27 +315,27 @@ func (c *EventHandlers) OnPageBuildEvent(eventHandler func(uri *url.URL, deliver
 	return c
 }
 
+// OnPersonalAccessTokenRequestEvent PersonalAccessTokenRequestEvent handler.
+func (c *EventHandlers) OnPersonalAccessTokenRequestEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.PersonalAccessTokenRequestEvent)) *EventHandlers {
+	c.onPersonalAccessTokenRequestEvent = eventHandler
+	return c
+}
+
 // OnPingEvent PingEvent handler.
 func (c *EventHandlers) OnPingEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.PingEvent)) *EventHandlers {
 	c.onPingEvent = eventHandler
 	return c
 }
 
-// OnProjectEvent ProjectEvent handler.
-func (c *EventHandlers) OnProjectEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.ProjectEvent)) *EventHandlers {
-	c.onProjectEvent = eventHandler
+// OnProjectV2Event ProjectV2Event handler.
+func (c *EventHandlers) OnProjectV2Event(eventHandler func(uri *url.URL, deliveryID string, event *github.ProjectV2Event)) *EventHandlers {
+	c.onProjectV2Event = eventHandler
 	return c
 }
 
-// OnProjectCardEvent ProjectCardEvent handler.
-func (c *EventHandlers) OnProjectCardEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.ProjectCardEvent)) *EventHandlers {
-	c.onProjectCardEvent = eventHandler
-	return c
-}
-
-// OnProjectColumnEvent ProjectColumnEvent handler.
-func (c *EventHandlers) OnProjectColumnEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.ProjectColumnEvent)) *EventHandlers {
-	c.onProjectColumnEvent = eventHandler
+// OnProjectV2ItemEvent ProjectV2ItemEvent handler.
+func (c *EventHandlers) OnProjectV2ItemEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.ProjectV2ItemEvent)) *EventHandlers {
+	c.onProjectV2ItemEvent = eventHandler
 	return c
 }
 
@@ -324,6 +399,12 @@ func (c *EventHandlers) OnRepositoryImportEvent(eventHandler func(uri *url.URL, 
 	return c
 }
 
+// OnRepositoryRulesetEvent RepositoryRulesetEvent handler.
+func (c *EventHandlers) OnRepositoryRulesetEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.RepositoryRulesetEvent)) *EventHandlers {
+	c.onRepositoryRulesetEvent = eventHandler
+	return c
+}
+
 // OnRepositoryVulnerabilityAlertEvent RepositoryVulnerabilityAlertEvent handler.
 func (c *EventHandlers) OnRepositoryVulnerabilityAlertEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.RepositoryVulnerabilityAlertEvent)) *EventHandlers {
 	c.onRepositoryVulnerabilityAlertEvent = eventHandler
@@ -339,6 +420,30 @@ func (c *EventHandlers) OnReleaseEvent(eventHandler func(uri *url.URL, deliveryI
 // OnSecretScanningAlertEvent SecretScanningAlertEvent handler.
 func (c *EventHandlers) OnSecretScanningAlertEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.SecretScanningAlertEvent)) *EventHandlers {
 	c.onSecretScanningAlertEvent = eventHandler
+	return c
+}
+
+// OnSecretScanningAlertLocationEvent SecretScanningAlertLocationEvent handler.
+func (c *EventHandlers) OnSecretScanningAlertLocationEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.SecretScanningAlertLocationEvent)) *EventHandlers {
+	c.onSecretScanningAlertLocationEvent = eventHandler
+	return c
+}
+
+// OnSecurityAdvisoryEvent SecurityAdvisoryEvent handler.
+func (c *EventHandlers) OnSecurityAdvisoryEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.SecurityAdvisoryEvent)) *EventHandlers {
+	c.onSecurityAdvisoryEvent = eventHandler
+	return c
+}
+
+// OnSecurityAndAnalysisEvent SecurityAndAnalysisEvent handler.
+func (c *EventHandlers) OnSecurityAndAnalysisEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.SecurityAndAnalysisEvent)) *EventHandlers {
+	c.onSecurityAndAnalysisEvent = eventHandler
+	return c
+}
+
+// OnSponsorshipEvent SponsorshipEvent handler.
+func (c *EventHandlers) OnSponsorshipEvent(eventHandler func(uri *url.URL, deliveryID string, event *github.SponsorshipEvent)) *EventHandlers {
+	c.onSponsorshipEvent = eventHandler
 	return c
 }
 

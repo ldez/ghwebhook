@@ -7,12 +7,16 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/google/go-github/v62/github"
+	"github.com/google/go-github/v68/github"
 )
 
 func (s *WebHook) handleEvents(uri *url.URL, deliveryID string, rawEvent interface{}) error {
 	switch event := rawEvent.(type) {
 
+	case *github.BranchProtectionConfigurationEvent:
+		if s.eventHandlers.onBranchProtectionConfigurationEvent != nil {
+			s.eventHandlers.onBranchProtectionConfigurationEvent(uri, deliveryID, event)
+		}
 	case *github.BranchProtectionRuleEvent:
 		if s.eventHandlers.onBranchProtectionRuleEvent != nil {
 			s.eventHandlers.onBranchProtectionRuleEvent(uri, deliveryID, event)
@@ -24,6 +28,10 @@ func (s *WebHook) handleEvents(uri *url.URL, deliveryID string, rawEvent interfa
 	case *github.CheckSuiteEvent:
 		if s.eventHandlers.onCheckSuiteEvent != nil {
 			s.eventHandlers.onCheckSuiteEvent(uri, deliveryID, event)
+		}
+	case *github.CodeScanningAlertEvent:
+		if s.eventHandlers.onCodeScanningAlertEvent != nil {
+			s.eventHandlers.onCodeScanningAlertEvent(uri, deliveryID, event)
 		}
 	case *github.CommitCommentEvent:
 		if s.eventHandlers.onCommitCommentEvent != nil {
@@ -37,9 +45,21 @@ func (s *WebHook) handleEvents(uri *url.URL, deliveryID string, rawEvent interfa
 		if s.eventHandlers.onCreateEvent != nil {
 			s.eventHandlers.onCreateEvent(uri, deliveryID, event)
 		}
+	case *github.CustomPropertyEvent:
+		if s.eventHandlers.onCustomPropertyEvent != nil {
+			s.eventHandlers.onCustomPropertyEvent(uri, deliveryID, event)
+		}
+	case *github.CustomPropertyValuesEvent:
+		if s.eventHandlers.onCustomPropertyValuesEvent != nil {
+			s.eventHandlers.onCustomPropertyValuesEvent(uri, deliveryID, event)
+		}
 	case *github.DeleteEvent:
 		if s.eventHandlers.onDeleteEvent != nil {
 			s.eventHandlers.onDeleteEvent(uri, deliveryID, event)
+		}
+	case *github.DependabotAlertEvent:
+		if s.eventHandlers.onDependabotAlertEvent != nil {
+			s.eventHandlers.onDependabotAlertEvent(uri, deliveryID, event)
 		}
 	case *github.DeployKeyEvent:
 		if s.eventHandlers.onDeployKeyEvent != nil {
@@ -49,13 +69,25 @@ func (s *WebHook) handleEvents(uri *url.URL, deliveryID string, rawEvent interfa
 		if s.eventHandlers.onDeploymentEvent != nil {
 			s.eventHandlers.onDeploymentEvent(uri, deliveryID, event)
 		}
+	case *github.DeploymentReviewEvent:
+		if s.eventHandlers.onDeploymentReviewEvent != nil {
+			s.eventHandlers.onDeploymentReviewEvent(uri, deliveryID, event)
+		}
 	case *github.DeploymentStatusEvent:
 		if s.eventHandlers.onDeploymentStatusEvent != nil {
 			s.eventHandlers.onDeploymentStatusEvent(uri, deliveryID, event)
 		}
+	case *github.DeploymentProtectionRuleEvent:
+		if s.eventHandlers.onDeploymentProtectionRuleEvent != nil {
+			s.eventHandlers.onDeploymentProtectionRuleEvent(uri, deliveryID, event)
+		}
 	case *github.DiscussionEvent:
 		if s.eventHandlers.onDiscussionEvent != nil {
 			s.eventHandlers.onDiscussionEvent(uri, deliveryID, event)
+		}
+	case *github.DiscussionCommentEvent:
+		if s.eventHandlers.onDiscussionCommentEvent != nil {
+			s.eventHandlers.onDiscussionCommentEvent(uri, deliveryID, event)
 		}
 	case *github.ForkEvent:
 		if s.eventHandlers.onForkEvent != nil {
@@ -76,6 +108,10 @@ func (s *WebHook) handleEvents(uri *url.URL, deliveryID string, rawEvent interfa
 	case *github.InstallationRepositoriesEvent:
 		if s.eventHandlers.onInstallationRepositoriesEvent != nil {
 			s.eventHandlers.onInstallationRepositoriesEvent(uri, deliveryID, event)
+		}
+	case *github.InstallationTargetEvent:
+		if s.eventHandlers.onInstallationTargetEvent != nil {
+			s.eventHandlers.onInstallationTargetEvent(uri, deliveryID, event)
 		}
 	case *github.IssueCommentEvent:
 		if s.eventHandlers.onIssueCommentEvent != nil {
@@ -101,6 +137,10 @@ func (s *WebHook) handleEvents(uri *url.URL, deliveryID string, rawEvent interfa
 		if s.eventHandlers.onMembershipEvent != nil {
 			s.eventHandlers.onMembershipEvent(uri, deliveryID, event)
 		}
+	case *github.MergeGroupEvent:
+		if s.eventHandlers.onMergeGroupEvent != nil {
+			s.eventHandlers.onMergeGroupEvent(uri, deliveryID, event)
+		}
 	case *github.MetaEvent:
 		if s.eventHandlers.onMetaEvent != nil {
 			s.eventHandlers.onMetaEvent(uri, deliveryID, event)
@@ -125,21 +165,21 @@ func (s *WebHook) handleEvents(uri *url.URL, deliveryID string, rawEvent interfa
 		if s.eventHandlers.onPageBuildEvent != nil {
 			s.eventHandlers.onPageBuildEvent(uri, deliveryID, event)
 		}
+	case *github.PersonalAccessTokenRequestEvent:
+		if s.eventHandlers.onPersonalAccessTokenRequestEvent != nil {
+			s.eventHandlers.onPersonalAccessTokenRequestEvent(uri, deliveryID, event)
+		}
 	case *github.PingEvent:
 		if s.eventHandlers.onPingEvent != nil {
 			s.eventHandlers.onPingEvent(uri, deliveryID, event)
 		}
-	case *github.ProjectEvent:
-		if s.eventHandlers.onProjectEvent != nil {
-			s.eventHandlers.onProjectEvent(uri, deliveryID, event)
+	case *github.ProjectV2Event:
+		if s.eventHandlers.onProjectV2Event != nil {
+			s.eventHandlers.onProjectV2Event(uri, deliveryID, event)
 		}
-	case *github.ProjectCardEvent:
-		if s.eventHandlers.onProjectCardEvent != nil {
-			s.eventHandlers.onProjectCardEvent(uri, deliveryID, event)
-		}
-	case *github.ProjectColumnEvent:
-		if s.eventHandlers.onProjectColumnEvent != nil {
-			s.eventHandlers.onProjectColumnEvent(uri, deliveryID, event)
+	case *github.ProjectV2ItemEvent:
+		if s.eventHandlers.onProjectV2ItemEvent != nil {
+			s.eventHandlers.onProjectV2ItemEvent(uri, deliveryID, event)
 		}
 	case *github.PublicEvent:
 		if s.eventHandlers.onPublicEvent != nil {
@@ -181,6 +221,10 @@ func (s *WebHook) handleEvents(uri *url.URL, deliveryID string, rawEvent interfa
 		if s.eventHandlers.onRepositoryImportEvent != nil {
 			s.eventHandlers.onRepositoryImportEvent(uri, deliveryID, event)
 		}
+	case *github.RepositoryRulesetEvent:
+		if s.eventHandlers.onRepositoryRulesetEvent != nil {
+			s.eventHandlers.onRepositoryRulesetEvent(uri, deliveryID, event)
+		}
 	case *github.RepositoryVulnerabilityAlertEvent:
 		if s.eventHandlers.onRepositoryVulnerabilityAlertEvent != nil {
 			s.eventHandlers.onRepositoryVulnerabilityAlertEvent(uri, deliveryID, event)
@@ -192,6 +236,22 @@ func (s *WebHook) handleEvents(uri *url.URL, deliveryID string, rawEvent interfa
 	case *github.SecretScanningAlertEvent:
 		if s.eventHandlers.onSecretScanningAlertEvent != nil {
 			s.eventHandlers.onSecretScanningAlertEvent(uri, deliveryID, event)
+		}
+	case *github.SecretScanningAlertLocationEvent:
+		if s.eventHandlers.onSecretScanningAlertLocationEvent != nil {
+			s.eventHandlers.onSecretScanningAlertLocationEvent(uri, deliveryID, event)
+		}
+	case *github.SecurityAdvisoryEvent:
+		if s.eventHandlers.onSecurityAdvisoryEvent != nil {
+			s.eventHandlers.onSecurityAdvisoryEvent(uri, deliveryID, event)
+		}
+	case *github.SecurityAndAnalysisEvent:
+		if s.eventHandlers.onSecurityAndAnalysisEvent != nil {
+			s.eventHandlers.onSecurityAndAnalysisEvent(uri, deliveryID, event)
+		}
+	case *github.SponsorshipEvent:
+		if s.eventHandlers.onSponsorshipEvent != nil {
+			s.eventHandlers.onSponsorshipEvent(uri, deliveryID, event)
 		}
 	case *github.StarEvent:
 		if s.eventHandlers.onStarEvent != nil {
