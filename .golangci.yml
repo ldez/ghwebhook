@@ -82,10 +82,6 @@ issues:
     - path: (.+)_test.go
       linters:
         - funlen
-    - path: webhook.go
-      text: "(cyclomatic|cognitive) complexity (\\d+) of func `\\(\\*WebHook\\)\\.handleEvents` is high"
-    - path: webhook.go
-      text: "Function '(ServeHTTP|handleEvents)' has too many statements"
 
 run:
   timeout: 5m

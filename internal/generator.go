@@ -11,7 +11,7 @@ import (
 
 func main() {
 	model := map[string]interface{}{
-		// https://github.com/google/go-github/blob/cd880c603cb76925a9bcf3325f2877902ab0a0eb/github/messages.go#L49-L117
+		// https://github.com/google/go-github/blob/v69.0.0/github/messages.go#L48-L117
 		"Events": []string{
 			"BranchProtectionConfigurationEvent",
 			"BranchProtectionRuleEvent",

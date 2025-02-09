@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/google/go-github/v68/github"
+	"github.com/google/go-github/v69/github"
 	"github.com/ldez/ghwebhook/v4/eventtype"
 )
 
@@ -99,10 +99,7 @@ func TestServeHTTP(t *testing.T) {
 	}
 
 	for _, test := range testCases {
-		test := test
 		t.Run(test.name, func(t *testing.T) {
-			// t.Parallel()
-
 			webHook := NewWebHook(eventHandlers, WithSecret(test.secret))
 
 			req := httptest.NewRequest(test.method, test.path, test.body)
@@ -145,7 +142,6 @@ func Test_handleEvents(t *testing.T) {
 	}
 
 	for _, test := range testCases {
-		test := test
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -226,7 +222,6 @@ func Test_handleEvents_payload(t *testing.T) {
 	}
 
 	for _, test := range testCases {
-		test := test
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
 
